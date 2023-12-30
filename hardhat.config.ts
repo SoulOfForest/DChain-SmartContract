@@ -14,14 +14,6 @@ import 'hardhat-docgen';
 import 'hardhat-address-exporter';
 import 'hardhat-notifier';
 
-// {
-//   "plugins": ["prettier"],
-//     "rules": {
-//     "prettier/prettier": "error"
-//   }
-// }
-
-// import "hardhat-tracer";
 import '@nomiclabs/hardhat-solhint';
 import '@nomicfoundation/hardhat-chai-matchers';
 import '@nomicfoundation/hardhat-toolbox';
@@ -30,13 +22,14 @@ import '@openzeppelin/hardhat-upgrades';
 import '@primitivefi/hardhat-dodoc';
 
 import { removeConsoleLog } from 'hardhat-preprocessor';
+import { ethers } from 'ethers';
 
 const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY as string;
 const PROTOCOL_ADMIN_MULTISIG = process.env.PROTOCOL_ADMIN_ADDRESS || DEPLOYER_PRIVATE_KEY;
 
 const accounts = [DEPLOYER_PRIVATE_KEY as string];
 
-const config: HardhatUserConfig & { sourcify: {} } = {
+const config = {
   sourcify: {
     // Disabled by default
     // Doesn't need an API key
@@ -108,14 +101,25 @@ const config: HardhatUserConfig & { sourcify: {} } = {
     notifyOnFailure: true,
   },
   etherscan: {
-    // apiKey: process.env.ARBITRUM_API_KEY || ''
+    // apiKey: process.env.ARBITRUM_API_KEY || '',
     apiKey: {
       goerli: process.env.ETHERSCAN_KEY || '',
       mainnet: process.env.ETHERSCAN_KEY || '',
       sepolia: process.env.ETHERSCAN_KEY || '',
       arbitrumGoerli: process.env.ARBITRUM_API_KEY || '',
-      arbitrum: process.env.ARBITRUM_API_KEY || '',
+      arbitrumSepolia: process.env.ARBITRUM_API_KEY || '',
+      // arbitrum: process.env.ARBITRUM_API_KEY || '',
     } as any,
+    customChains: [
+      {
+        network: "arbitrumSepolia",
+        chainId: 421614,
+        urls: {
+          apiURL: "https://api-sepolia.arbiscan.io/api",
+          browserURL: "https://sepolia.arbiscan.io/",
+        },
+      },
+    ]
   },
   gasReporter: {
     currency: 'USD',
@@ -198,13 +202,14 @@ const config: HardhatUserConfig & { sourcify: {} } = {
       saveDeployments: true,
       tags: ['staging'],
     },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    modeTestnet: {
+      url: "https://sepolia.mode.network",
+      chainId: 919,
       accounts,
-      chainId: 42,
+      gasPrice: 4000000000,
       live: true,
       saveDeployments: true,
-      tags: ['staging'],
+      tags: ['staging']
     },
     moonbase: {
       url: 'https://rpc.testnet.moonbeam.network',
@@ -226,6 +231,14 @@ const config: HardhatUserConfig & { sourcify: {} } = {
       url: 'https://arbitrum-goerli.publicnode.com',
       accounts,
       chainId: 421613,
+      live: true,
+      saveDeployments: true,
+      tags: ['staging'],
+    },
+    arbitrumSepolia: {
+      url: 'https://radial-compatible-field.arbitrum-sepolia.quiknode.pro/439f284b4a5a6307cffd2751864014994729dc99/',
+      accounts,
+      chainId: 421614,
       live: true,
       saveDeployments: true,
       tags: ['staging'],
@@ -356,6 +369,7 @@ const config: HardhatUserConfig & { sourcify: {} } = {
     },
     protocolAdmin: {
       421613: PROTOCOL_ADMIN_MULTISIG,
+      421614: PROTOCOL_ADMIN_MULTISIG,
       1: PROTOCOL_ADMIN_MULTISIG
     }
   },

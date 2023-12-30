@@ -7,13 +7,13 @@
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "_oracle",
+        "internalType": "contract IERC20",
+        "name": "_rewardToken",
         "type": "address"
       },
       {
         "internalType": "contract IERC20",
-        "name": "_rewardToken",
+        "name": "_extraRewardToken",
         "type": "address"
       }
     ],
@@ -31,18 +31,30 @@
       },
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountInUSD",
+        "type": "uint256"
       }
     ],
-    "name": "Deposit",
+    "name": "Deposited",
     "type": "event"
   },
   {
@@ -83,37 +95,6 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "origin",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "level",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "RewardCommissionPaid",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "claimer",
         "type": "address"
       },
@@ -121,6 +102,12 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountInUSD",
         "type": "uint256"
       }
     ],
@@ -192,33 +179,6 @@
   },
   {
     "inputs": [],
-    "name": "Pause",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "TEN_MINUTES",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "UnPause",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "admin",
     "outputs": [
       {
@@ -231,13 +191,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "baseInterestPerPeriod",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "allowedStakeTokens",
     "outputs": [
       {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
+        "internalType": "bool",
+        "name": "created",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -246,11 +212,24 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
+    "name": "assetPrices",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "claimReward",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -284,37 +263,23 @@
       },
       {
         "internalType": "address",
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "referrer",
         "type": "address"
       }
     ],
-    "name": "createStakingContract",
+    "name": "deposit",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "cycleDuration",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "",
-        "type": "uint64"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "getF1Invited",
+    "name": "directInterest",
     "outputs": [
       {
         "internalType": "uint256",
@@ -327,12 +292,86 @@
   },
   {
     "inputs": [],
-    "name": "interestIncreasePerCycle",
+    "name": "extraRewardToken",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "contract IERC20",
         "name": "",
-        "type": "uint16"
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fallbackRewardTokenPriceInUSD",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStakingAmountByPegToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStakingAmountInUSD",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "interestPerSeconds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -359,20 +398,7 @@
   },
   {
     "inputs": [],
-    "name": "maxInterestPerPeriod",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "minimumStakingAmount",
+    "name": "maximumEarningsInPercent",
     "outputs": [
       {
         "internalType": "uint256",
@@ -385,12 +411,36 @@
   },
   {
     "inputs": [],
-    "name": "oracle",
+    "name": "minimumStakingAmountInUSD",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "name": "offeredCurrencies",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "decimal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -407,6 +457,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -428,37 +485,14 @@
         "internalType": "address",
         "name": "_account",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
       }
     ],
-    "name": "pendingReward",
+    "name": "pendingRewardInUSD",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint64",
-        "name": "",
-        "type": "uint64"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "periodDuration",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "",
-        "type": "uint64"
       }
     ],
     "stateMutability": "view",
@@ -472,30 +506,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "referralInvitationsByCommissionLevel",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -544,6 +554,99 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "_stakeToken",
+        "type": "address"
+      }
+    ],
+    "name": "setAllowedStakeToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_pegToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oracle",
+        "type": "address"
+      }
+    ],
+    "name": "setAssetOracle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_currency",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_decimal",
+        "type": "uint256"
+      }
+    ],
+    "name": "setOfferedCurrency",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "stakingContracts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalStakesInUSD",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "claimedInterest",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint64",
+        "name": "lastClaimedTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "lastUpdatedTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "lastTimeDeposited",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -562,19 +665,6 @@
   {
     "inputs": [],
     "name": "totalStaked",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalStakingContracts",
     "outputs": [
       {
         "internalType": "uint256",
@@ -612,6 +702,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -625,89 +722,10 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_treasury",
-        "type": "address"
-      }
-    ],
-    "name": "updateTreasury",
+    "inputs": [],
+    "name": "withdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userInterestCommissions",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "userStakingContracts",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "totalStakes",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalWithdrawed",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "claimedInterest",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint64",
-        "name": "lastUpdatedTime",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint64",
-        "name": "lastTimeDeposited",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint64",
-        "name": "lastTimeClaimed",
-        "type": "uint64"
-      },
-      {
-        "internalType": "bool",
-        "name": "created",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ]

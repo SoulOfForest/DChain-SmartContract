@@ -9,5 +9,9 @@ interface IOracleSimple {
 
     function update() external;
 
+    function token0() external view returns(address);
+    
+    function token1() external view returns(address);
+
     function PERIOD() external view returns(uint);
 }

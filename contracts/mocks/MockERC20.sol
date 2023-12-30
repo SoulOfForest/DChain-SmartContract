@@ -21,6 +21,10 @@ contract MockERC20 is ERC20PermitUpgradeable {
         ERC20Upgradeable._mint(_to, _amount);
     }
 
+    function burn(uint _amount) public {
+        ERC20Upgradeable._burn(_msgSender(), _amount);
+    }
+
     function decimals() public view override returns (uint8) {
         return _decimals;
     }

@@ -1,0 +1,15 @@
+[
+  {
+    "inputs": [],
+    "name": "getVersion",
+    "outputs": [
+      {
+        "internalType": "uint8[3]",
+        "name": "",
+        "type": "uint8[3]"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]
