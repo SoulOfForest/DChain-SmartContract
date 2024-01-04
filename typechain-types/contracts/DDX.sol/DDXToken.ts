@@ -41,7 +41,6 @@ export interface DDXTokenInterface extends utils.Interface {
     "includeAddress(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize(string,string,uint256)": FunctionFragment;
-    "lockedBalance(address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -73,7 +72,6 @@ export interface DDXTokenInterface extends utils.Interface {
       | "includeAddress"
       | "increaseAllowance"
       | "initialize"
-      | "lockedBalance"
       | "mint"
       | "name"
       | "owner"
@@ -133,10 +131,6 @@ export interface DDXTokenInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "lockedBalance",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -203,10 +197,6 @@ export interface DDXTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "lockedBalance",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -400,11 +390,6 @@ export interface DDXToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    lockedBalance(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     mint(
       to: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -523,11 +508,6 @@ export interface DDXToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  lockedBalance(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   mint(
     to: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
@@ -645,11 +625,6 @@ export interface DDXToken extends BaseContract {
       cap: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    lockedBalance(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     mint(
       to: PromiseOrValue<string>,
@@ -806,11 +781,6 @@ export interface DDXToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    lockedBalance(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     mint(
       to: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -928,11 +898,6 @@ export interface DDXToken extends BaseContract {
       symbol: PromiseOrValue<string>,
       cap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    lockedBalance(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     mint(

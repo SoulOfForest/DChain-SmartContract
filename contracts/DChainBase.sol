@@ -17,6 +17,7 @@ contract DChainBase is
     PausableUpgradeable,
     ReentrancyGuardUpgradeable
 {
+    bytes32 public constant SUB_ADMIN_ROLE = keccak256("SUB_ADMIN_ROLE");
     bytes32 public constant OWNER_ROLE = keccak256("OWNER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     // Pre-reserving a few slots in the base contract in case we need to add things in the future.
@@ -38,6 +39,7 @@ contract DChainBase is
         _setupRole(OWNER_ROLE, owner);
         _setupRole(PAUSER_ROLE, owner);
 
+        _setRoleAdmin(SUB_ADMIN_ROLE, OWNER_ROLE);
         _setRoleAdmin(PAUSER_ROLE, OWNER_ROLE);
         _setRoleAdmin(OWNER_ROLE, OWNER_ROLE);
     }

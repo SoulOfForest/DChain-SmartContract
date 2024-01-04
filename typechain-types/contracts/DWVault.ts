@@ -29,49 +29,118 @@ import type {
 
 export interface DWVaultInterface extends utils.Interface {
   functions: {
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "DWStaking()": FunctionFragment;
+    "OWNER_ROLE()": FunctionFragment;
+    "PAUSER_ROLE()": FunctionFragment;
+    "SUB_ADMIN_ROLE()": FunctionFragment;
+    "__DChainBase_init(address)": FunctionFragment;
     "admin()": FunctionFragment;
+    "availableToStakeThroughVault()": FunctionFragment;
     "buyTokenWithToken(address,address,uint256)": FunctionFragment;
+    "claim(address)": FunctionFragment;
+    "closeTime()": FunctionFragment;
     "fundReceiver()": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "initialize(address,address,address,address,address,uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "isAdmin()": FunctionFragment;
+    "lockBeforeVesting()": FunctionFragment;
     "offeredCurrencies(address)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "pause()": FunctionFragment;
+    "openTime()": FunctionFragment;
     "paused()": FunctionFragment;
-    "poolStatus()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
+    "pendingSoldTokenClaim(address)": FunctionFragment;
+    "releasableAmount(address)": FunctionFragment;
+    "release()": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
     "setOfferedCurrency(address,uint256,uint256)": FunctionFragment;
+    "setTGEPercentage(uint256)": FunctionFragment;
     "setTotalRaiseAmount(uint256)": FunctionFragment;
     "soldToken()": FunctionFragment;
+    "stakeWithVault(uint256,uint256,address)": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
+    "tgePercentage()": FunctionFragment;
     "totalRaiseAmount()": FunctionFragment;
     "totalRaised()": FunctionFragment;
     "totalSold()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "treasury()": FunctionFragment;
-    "unpause()": FunctionFragment;
+    "vestingDuration()": FunctionFragment;
+    "vestingPeriodInSeconds()": FunctionFragment;
+    "vestingSchedules(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "DEFAULT_ADMIN_ROLE"
+      | "DWStaking"
+      | "OWNER_ROLE"
+      | "PAUSER_ROLE"
+      | "SUB_ADMIN_ROLE"
+      | "__DChainBase_init"
       | "admin"
+      | "availableToStakeThroughVault"
       | "buyTokenWithToken"
+      | "claim"
+      | "closeTime"
       | "fundReceiver"
+      | "getRoleAdmin"
+      | "grantRole"
+      | "hasRole"
+      | "initialize"
+      | "isAdmin"
+      | "lockBeforeVesting"
       | "offeredCurrencies"
-      | "owner"
-      | "pause"
+      | "openTime"
       | "paused"
-      | "poolStatus"
-      | "renounceOwnership"
+      | "pendingSoldTokenClaim"
+      | "releasableAmount"
+      | "release"
+      | "renounceRole"
+      | "revokeRole"
       | "setOfferedCurrency"
+      | "setTGEPercentage"
       | "setTotalRaiseAmount"
       | "soldToken"
+      | "stakeWithVault"
+      | "supportsInterface"
+      | "tgePercentage"
       | "totalRaiseAmount"
       | "totalRaised"
       | "totalSold"
-      | "transferOwnership"
       | "treasury"
-      | "unpause"
+      | "vestingDuration"
+      | "vestingPeriodInSeconds"
+      | "vestingSchedules"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "DWStaking", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "OWNER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PAUSER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SUB_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__DChainBase_init",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "availableToStakeThroughVault",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "buyTokenWithToken",
     values: [
@@ -81,23 +150,68 @@ export interface DWVaultInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "claim",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "closeTime", values?: undefined): string;
+  encodeFunctionData(
     functionFragment: "fundReceiver",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(functionFragment: "isAdmin", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "lockBeforeVesting",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "offeredCurrencies",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "openTime", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "poolStatus",
-    values?: undefined
+    functionFragment: "pendingSoldTokenClaim",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
+    functionFragment: "releasableAmount",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "release", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setOfferedCurrency",
@@ -108,10 +222,30 @@ export interface DWVaultInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "setTGEPercentage",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setTotalRaiseAmount",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "soldToken", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "stakeWithVault",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tgePercentage",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "totalRaiseAmount",
     values?: undefined
@@ -121,36 +255,91 @@ export interface DWVaultInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "totalSold", values?: undefined): string;
+  encodeFunctionData(functionFragment: "treasury", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
+    functionFragment: "vestingDuration",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "vestingPeriodInSeconds",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "vestingSchedules",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "treasury", values?: undefined): string;
-  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "DWStaking", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "OWNER_ROLE", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "PAUSER_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SUB_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "__DChainBase_init",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "availableToStakeThroughVault",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "buyTokenWithToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "closeTime", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "fundReceiver",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "lockBeforeVesting",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "offeredCurrencies",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "openTime", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "poolStatus", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
+    functionFragment: "pendingSoldTokenClaim",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "releasableAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "setOfferedCurrency",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setTGEPercentage",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -158,6 +347,18 @@ export interface DWVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "soldToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "stakeWithVault",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tgePercentage",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "totalRaiseAmount",
     data: BytesLike
@@ -167,50 +368,63 @@ export interface DWVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "totalSold", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "treasury", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferOwnership",
+    functionFragment: "vestingDuration",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "treasury", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "vestingPeriodInSeconds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "vestingSchedules",
+    data: BytesLike
+  ): Result;
 
   events: {
-    "BuyTokenByToken(address,address,uint256,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
+    "BuyTokenByToken(address,address,address,uint256,uint256)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "Paused(address)": EventFragment;
+    "PendingSoldTokenClaimed(address,address,uint256)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "TokenReleased(address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "BuyTokenByToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PendingSoldTokenClaimed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenReleased"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export interface BuyTokenByTokenEventObject {
+  investor: string;
   offerToken: string;
   beneficiary: string;
   amount: BigNumber;
   soldTokens: BigNumber;
 }
 export type BuyTokenByTokenEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
+  [string, string, string, BigNumber, BigNumber],
   BuyTokenByTokenEventObject
 >;
 
 export type BuyTokenByTokenEventFilter = TypedEventFilter<BuyTokenByTokenEvent>;
 
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export interface InitializedEventObject {
+  version: number;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface PausedEventObject {
   account: string;
@@ -218,6 +432,67 @@ export interface PausedEventObject {
 export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
+
+export interface PendingSoldTokenClaimedEventObject {
+  claimer: string;
+  beneficiary: string;
+  soldTokens: BigNumber;
+}
+export type PendingSoldTokenClaimedEvent = TypedEvent<
+  [string, string, BigNumber],
+  PendingSoldTokenClaimedEventObject
+>;
+
+export type PendingSoldTokenClaimedEventFilter =
+  TypedEventFilter<PendingSoldTokenClaimedEvent>;
+
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
+}
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
+>;
+
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
+
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
+>;
+
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
+
+export interface TokenReleasedEventObject {
+  beneficiary: string;
+  vestedAmount: BigNumber;
+}
+export type TokenReleasedEvent = TypedEvent<
+  [string, BigNumber],
+  TokenReleasedEventObject
+>;
+
+export type TokenReleasedEventFilter = TypedEventFilter<TokenReleasedEvent>;
 
 export interface UnpausedEventObject {
   account: string;
@@ -253,7 +528,24 @@ export interface DWVault extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    DWStaking(overrides?: CallOverrides): Promise<[string]>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    PAUSER_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    __DChainBase_init(
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     admin(overrides?: CallOverrides): Promise<[string]>;
+
+    availableToStakeThroughVault(overrides?: CallOverrides): Promise<[boolean]>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -262,7 +554,49 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    claim(
+      _beneficiary: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    closeTime(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     fundReceiver(overrides?: CallOverrides): Promise<[string]>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    initialize(
+      _owner: PromiseOrValue<string>,
+      _soldToken: PromiseOrValue<string>,
+      _treasury: PromiseOrValue<string>,
+      _fundReceiver: PromiseOrValue<string>,
+      _DWStaking: PromiseOrValue<string>,
+      _tgePercentage: PromiseOrValue<BigNumberish>,
+      _totalRaiseAmount: PromiseOrValue<BigNumberish>,
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      _openTime: PromiseOrValue<BigNumberish>,
+      _duration: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    isAdmin(overrides?: CallOverrides): Promise<[boolean]>;
+
+    lockBeforeVesting(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     offeredCurrencies(
       arg0: PromiseOrValue<string>,
@@ -275,17 +609,33 @@ export interface DWVault extends BaseContract {
       }
     >;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    pause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    openTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
-    poolStatus(overrides?: CallOverrides): Promise<[boolean]>;
+    pendingSoldTokenClaim(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    renounceOwnership(
+    releasableAmount(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    release(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -296,6 +646,11 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setTGEPercentage(
+      _tgePercentage: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setTotalRaiseAmount(
       _totalRaiseAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -303,25 +658,78 @@ export interface DWVault extends BaseContract {
 
     soldToken(overrides?: CallOverrides): Promise<[string]>;
 
+    stakeWithVault(
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _referrer: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    tgePercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     totalRaiseAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalRaised(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalSold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     treasury(overrides?: CallOverrides): Promise<[string]>;
 
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    vestingDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    vestingSchedules(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber,
+        BigNumber,
+        boolean
+      ] & {
+        beneficiary: string;
+        cliff: BigNumber;
+        start: BigNumber;
+        duration: BigNumber;
+        slicePeriodSeconds: BigNumber;
+        revocable: boolean;
+        amountTotal: BigNumber;
+        released: BigNumber;
+        revoked: boolean;
+      }
+    >;
   };
 
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  DWStaking(overrides?: CallOverrides): Promise<string>;
+
+  OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  __DChainBase_init(
+    owner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   admin(overrides?: CallOverrides): Promise<string>;
+
+  availableToStakeThroughVault(overrides?: CallOverrides): Promise<boolean>;
 
   buyTokenWithToken(
     _offerToken: PromiseOrValue<string>,
@@ -330,7 +738,49 @@ export interface DWVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  claim(
+    _beneficiary: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  closeTime(overrides?: CallOverrides): Promise<BigNumber>;
+
   fundReceiver(overrides?: CallOverrides): Promise<string>;
+
+  getRoleAdmin(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  grantRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  initialize(
+    _owner: PromiseOrValue<string>,
+    _soldToken: PromiseOrValue<string>,
+    _treasury: PromiseOrValue<string>,
+    _fundReceiver: PromiseOrValue<string>,
+    _DWStaking: PromiseOrValue<string>,
+    _tgePercentage: PromiseOrValue<BigNumberish>,
+    _totalRaiseAmount: PromiseOrValue<BigNumberish>,
+    _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+    _openTime: PromiseOrValue<BigNumberish>,
+    _duration: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  isAdmin(overrides?: CallOverrides): Promise<boolean>;
+
+  lockBeforeVesting(overrides?: CallOverrides): Promise<BigNumber>;
 
   offeredCurrencies(
     arg0: PromiseOrValue<string>,
@@ -343,17 +793,33 @@ export interface DWVault extends BaseContract {
     }
   >;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  pause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  openTime(overrides?: CallOverrides): Promise<BigNumber>;
 
   paused(overrides?: CallOverrides): Promise<boolean>;
 
-  poolStatus(overrides?: CallOverrides): Promise<boolean>;
+  pendingSoldTokenClaim(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-  renounceOwnership(
+  releasableAmount(
+    _user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  release(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -364,6 +830,11 @@ export interface DWVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setTGEPercentage(
+    _tgePercentage: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setTotalRaiseAmount(
     _totalRaiseAmount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -371,25 +842,78 @@ export interface DWVault extends BaseContract {
 
   soldToken(overrides?: CallOverrides): Promise<string>;
 
+  stakeWithVault(
+    _originAmount: PromiseOrValue<BigNumberish>,
+    _lockedAmount: PromiseOrValue<BigNumberish>,
+    _referrer: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  supportsInterface(
+    interfaceId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  tgePercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
   totalRaiseAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
   totalRaised(overrides?: CallOverrides): Promise<BigNumber>;
 
   totalSold(overrides?: CallOverrides): Promise<BigNumber>;
 
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   treasury(overrides?: CallOverrides): Promise<string>;
 
-  unpause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
+
+  vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+  vestingSchedules(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      BigNumber,
+      BigNumber,
+      boolean
+    ] & {
+      beneficiary: string;
+      cliff: BigNumber;
+      start: BigNumber;
+      duration: BigNumber;
+      slicePeriodSeconds: BigNumber;
+      revocable: boolean;
+      amountTotal: BigNumber;
+      released: BigNumber;
+      revoked: boolean;
+    }
+  >;
 
   callStatic: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    DWStaking(overrides?: CallOverrides): Promise<string>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    __DChainBase_init(
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     admin(overrides?: CallOverrides): Promise<string>;
+
+    availableToStakeThroughVault(overrides?: CallOverrides): Promise<boolean>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -398,7 +922,49 @@ export interface DWVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    claim(
+      _beneficiary: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    closeTime(overrides?: CallOverrides): Promise<BigNumber>;
+
     fundReceiver(overrides?: CallOverrides): Promise<string>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    initialize(
+      _owner: PromiseOrValue<string>,
+      _soldToken: PromiseOrValue<string>,
+      _treasury: PromiseOrValue<string>,
+      _fundReceiver: PromiseOrValue<string>,
+      _DWStaking: PromiseOrValue<string>,
+      _tgePercentage: PromiseOrValue<BigNumberish>,
+      _totalRaiseAmount: PromiseOrValue<BigNumberish>,
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      _openTime: PromiseOrValue<BigNumberish>,
+      _duration: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    isAdmin(overrides?: CallOverrides): Promise<boolean>;
+
+    lockBeforeVesting(overrides?: CallOverrides): Promise<BigNumber>;
 
     offeredCurrencies(
       arg0: PromiseOrValue<string>,
@@ -411,20 +977,43 @@ export interface DWVault extends BaseContract {
       }
     >;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    pause(overrides?: CallOverrides): Promise<void>;
+    openTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
-    poolStatus(overrides?: CallOverrides): Promise<boolean>;
+    pendingSoldTokenClaim(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+    releasableAmount(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    release(overrides?: CallOverrides): Promise<void>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setOfferedCurrency(
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
       _decimals: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setTGEPercentage(
+      _tgePercentage: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -435,54 +1024,158 @@ export interface DWVault extends BaseContract {
 
     soldToken(overrides?: CallOverrides): Promise<string>;
 
+    stakeWithVault(
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _referrer: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    tgePercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalRaiseAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalRaised(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     treasury(overrides?: CallOverrides): Promise<string>;
 
-    unpause(overrides?: CallOverrides): Promise<void>;
+    vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vestingSchedules(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber,
+        BigNumber,
+        boolean
+      ] & {
+        beneficiary: string;
+        cliff: BigNumber;
+        start: BigNumber;
+        duration: BigNumber;
+        slicePeriodSeconds: BigNumber;
+        revocable: boolean;
+        amountTotal: BigNumber;
+        released: BigNumber;
+        revoked: boolean;
+      }
+    >;
   };
 
   filters: {
-    "BuyTokenByToken(address,address,uint256,uint256)"(
+    "BuyTokenByToken(address,address,address,uint256,uint256)"(
+      investor?: PromiseOrValue<string> | null,
       offerToken?: PromiseOrValue<string> | null,
       beneficiary?: PromiseOrValue<string> | null,
       amount?: null,
       soldTokens?: null
     ): BuyTokenByTokenEventFilter;
     BuyTokenByToken(
+      investor?: PromiseOrValue<string> | null,
       offerToken?: PromiseOrValue<string> | null,
       beneficiary?: PromiseOrValue<string> | null,
       amount?: null,
       soldTokens?: null
     ): BuyTokenByTokenEventFilter;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
+
+    "PendingSoldTokenClaimed(address,address,uint256)"(
+      claimer?: PromiseOrValue<string> | null,
+      beneficiary?: PromiseOrValue<string> | null,
+      soldTokens?: null
+    ): PendingSoldTokenClaimedEventFilter;
+    PendingSoldTokenClaimed(
+      claimer?: PromiseOrValue<string> | null,
+      beneficiary?: PromiseOrValue<string> | null,
+      soldTokens?: null
+    ): PendingSoldTokenClaimedEventFilter;
+
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+
+    "RoleGranted(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+
+    "TokenReleased(address,uint256)"(
+      beneficiary?: PromiseOrValue<string> | null,
+      vestedAmount?: null
+    ): TokenReleasedEventFilter;
+    TokenReleased(
+      beneficiary?: PromiseOrValue<string> | null,
+      vestedAmount?: null
+    ): TokenReleasedEventFilter;
 
     "Unpaused(address)"(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
   };
 
   estimateGas: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    DWStaking(overrides?: CallOverrides): Promise<BigNumber>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PAUSER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    __DChainBase_init(
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     admin(overrides?: CallOverrides): Promise<BigNumber>;
+
+    availableToStakeThroughVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -491,24 +1184,82 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    claim(
+      _beneficiary: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    closeTime(overrides?: CallOverrides): Promise<BigNumber>;
+
     fundReceiver(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      _owner: PromiseOrValue<string>,
+      _soldToken: PromiseOrValue<string>,
+      _treasury: PromiseOrValue<string>,
+      _fundReceiver: PromiseOrValue<string>,
+      _DWStaking: PromiseOrValue<string>,
+      _tgePercentage: PromiseOrValue<BigNumberish>,
+      _totalRaiseAmount: PromiseOrValue<BigNumberish>,
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      _openTime: PromiseOrValue<BigNumberish>,
+      _duration: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    isAdmin(overrides?: CallOverrides): Promise<BigNumber>;
+
+    lockBeforeVesting(overrides?: CallOverrides): Promise<BigNumber>;
 
     offeredCurrencies(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    openTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
-    poolStatus(overrides?: CallOverrides): Promise<BigNumber>;
+    pendingSoldTokenClaim(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    renounceOwnership(
+    releasableAmount(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    release(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -516,6 +1267,11 @@ export interface DWVault extends BaseContract {
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
       _decimals: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setTGEPercentage(
+      _tgePercentage: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -526,26 +1282,61 @@ export interface DWVault extends BaseContract {
 
     soldToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    stakeWithVault(
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _referrer: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tgePercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalRaiseAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalRaised(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     treasury(overrides?: CallOverrides): Promise<BigNumber>;
 
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vestingSchedules(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    DWStaking(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    PAUSER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    __DChainBase_init(
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    availableToStakeThroughVault(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -554,24 +1345,82 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    claim(
+      _beneficiary: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    closeTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     fundReceiver(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      _owner: PromiseOrValue<string>,
+      _soldToken: PromiseOrValue<string>,
+      _treasury: PromiseOrValue<string>,
+      _fundReceiver: PromiseOrValue<string>,
+      _DWStaking: PromiseOrValue<string>,
+      _tgePercentage: PromiseOrValue<BigNumberish>,
+      _totalRaiseAmount: PromiseOrValue<BigNumberish>,
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      _openTime: PromiseOrValue<BigNumberish>,
+      _duration: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    lockBeforeVesting(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     offeredCurrencies(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    pause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    openTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    poolStatus(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    pendingSoldTokenClaim(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
+    releasableAmount(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    release(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -582,6 +1431,11 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTGEPercentage(
+      _tgePercentage: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setTotalRaiseAmount(
       _totalRaiseAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -589,21 +1443,37 @@ export interface DWVault extends BaseContract {
 
     soldToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    stakeWithVault(
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _referrer: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tgePercentage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     totalRaiseAmount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalRaised(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     treasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    vestingDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    vestingPeriodInSeconds(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    vestingSchedules(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

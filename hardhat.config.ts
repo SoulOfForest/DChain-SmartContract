@@ -25,7 +25,8 @@ import { removeConsoleLog } from 'hardhat-preprocessor';
 import { ethers } from 'ethers';
 
 const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY as string;
-const PROTOCOL_ADMIN_MULTISIG = process.env.PROTOCOL_ADMIN_ADDRESS || DEPLOYER_PRIVATE_KEY;
+const TREASURY_ADDRESS = process.env.TREASURY_ADDRESS || DEPLOYER_PRIVATE_KEY;
+const OWNER_ADDRESS = process.env.OWNER_ADDRESS || DEPLOYER_PRIVATE_KEY;
 
 const accounts = [DEPLOYER_PRIVATE_KEY as string];
 
@@ -236,7 +237,7 @@ const config = {
       tags: ['staging'],
     },
     arbitrumSepolia: {
-      url: 'https://radial-compatible-field.arbitrum-sepolia.quiknode.pro/439f284b4a5a6307cffd2751864014994729dc99/',
+      url: 'https://indulgent-small-putty.arbitrum-sepolia.quiknode.pro/7ab4a87931be553808a04f90a2bcc03c6471ece6/',
       accounts,
       chainId: 421614,
       live: true,
@@ -367,10 +368,13 @@ const config = {
     deployer: {
       default: 0,
     },
-    protocolAdmin: {
-      421613: PROTOCOL_ADMIN_MULTISIG,
-      421614: PROTOCOL_ADMIN_MULTISIG,
-      1: PROTOCOL_ADMIN_MULTISIG
+    treasury: {
+      421613: TREASURY_ADDRESS,
+      421614: TREASURY_ADDRESS,
+    },
+    owner: {
+      421613: OWNER_ADDRESS,
+      421614: OWNER_ADDRESS,
     }
   },
   preprocess: {

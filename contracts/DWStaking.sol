@@ -7,9 +7,13 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IOracleSimple.sol";
 import "./interfaces/IDChainStaking.sol";
+import "./interfaces/IDDXVault.sol";
+import "./interfaces/IDDXStaking.sol";
+import "./interfaces/IDWVault.sol";
+import "./DChainBase.sol";
 import "hardhat/console.sol";
 
-contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
+contract DWStaking is IDChainStaking, DChainBase {
     struct StakingInfo {
         uint256 totalExpectedInterest;
         uint256 totalStakesInUSD;
@@ -34,11 +38,15 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
     uint32 private constant ONE_DAY_IN_SECONDS = 1 days;
     uint32 private constant ONE_YEAR_IN_SECONDS = 365 days;
 
-    address public treasury;
 
     IERC20 public rewardToken;
     IERC20 public extraRewardToken;
+
+    IDDXVault public DDXVault;
+    IDWVault public vault;
+    IDDXStaking public DDXStaking;
     
+    address public treasury;
     address public admin;
 
     uint256 public totalStakingContracts;
@@ -47,14 +55,12 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
     uint256 public minimumStakingAmountInUSD; 
     uint256 public maximumEarningsInPercent;
 
-    uint256 public fallbackRewardTokenPriceInUSD;
-
     uint64 public claimDuration;
     uint256 public directInterest;
     
     uint256[9] public commissionInterestLevels;
 
-    bool public poolStatus;
+    bool public emergencyCancelled;
 
     // Asset token -> Offered Currency (to $)
     mapping(address => OfferedCurrency) public offeredCurrencies;
@@ -70,12 +76,14 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
     // staking contract id -> owner
     mapping(uint => address) public stakingContractOwnedBy;
 
-    event Deposited(address indexed user, address indexed stakeToken, address indexed referrer, uint256 amount, uint256 amountInUSD);
+    event ContractCreated(uint256 indexed contractId, address indexed user, address indexed stakeToken, address referrer, uint256 amount, uint256 amountInUSD);
     event StakingContractCreated(address indexed user, address indexed referrer, uint indexed contractId, uint stakingAmount);
     event Withdraw(address indexed user, uint256 amount);
-    event RewardHarvested(address indexed claimer, uint256 amount, uint256 amountInUSD);
+    event RewardHarvested(uint256 indexed contractId, address indexed claimer, uint256 amount, uint256 amountInUSD);
 
-    constructor(address _treasury, IERC20 _rewardToken, IERC20 _extraRewardToken) {
+    function initialize(address _owner, address _treasury, IERC20 _rewardToken, IERC20 _extraRewardToken) external initializer {
+        __DChainBase_init(_owner);
+        
         /// @dev: ZA - Zero address
         require(_treasury != address(0), "ZA");
         require(address(_rewardToken) != address(0), "ZA");
@@ -84,7 +92,6 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
         rewardToken = _rewardToken;
         extraRewardToken = _extraRewardToken;
         admin = msg.sender;
-        poolStatus = true;
 
         /// Commission for the invitation and only get once
         commissionInterestLevels = [
@@ -102,60 +109,82 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
 
         claimDuration = 600 days; // 20 months
         directInterest = 50000000000000000; // 5%
-        fallbackRewardTokenPriceInUSD = 20000; // 0.02 USD (6 Decimals)
         minimumStakingAmountInUSD = 100 * (10 ** 6); // Minimum will be 100$
         maximumEarningsInPercent = 2000000000000000000; // 200%
+
+        _setupRole(SUB_ADMIN_ROLE, _owner);
 
         // Max approve for transfer from 
         rewardToken.approve(address(this), type(uint256).max);
     }
 
     /// -----------------------------------
-    /// ---------- View Function ----------
-    /// -----------------------------------
-
-    function joinByReferral(address _user) external view returns(bool) {
-        return referredBy[_user] != address(0);
-    }
-
-    /// -----------------------------------
     /// --------- Update Function ---------
     /// -----------------------------------
 
-    function setAssetOracle(address _pegToken, address _oracle) external onlyAdmin {
+    function setDDXStaking(IDDXStaking _staking) external onlyRole(SUB_ADMIN_ROLE) {
+        require(address(_staking) != address(0), "pool: DDX Staking cannot be zero address");
+        DDXStaking = _staking;
+    }
+
+    function setDWVault(IDWVault _vault) external onlyRole(SUB_ADMIN_ROLE) {
+        require(address(_vault) != address(0), "pool: DW vault cannot be zero address");
+        vault = _vault;
+    }
+
+    function setDDXVault(IDDXVault _vault) external onlyRole(SUB_ADMIN_ROLE) {
+        require(address(_vault) != address(0), "pool: DDX vault cannot be zero address");
+        DDXVault = _vault;
+    }
+
+    function setAssetOracle(address _pegToken, address _oracle) external onlyRole(SUB_ADMIN_ROLE) {
         assetPrices[_pegToken] = _oracle;
     }
 
     // how to convert from 1 Token - to $
-    function setOfferedCurrency(address _currency, uint _rate, uint _decimal) external onlyAdmin {
+    function setOfferedCurrency(address _currency, uint _rate, uint _decimal) external onlyRole(SUB_ADMIN_ROLE) {
         OfferedCurrency storage offeredCurrency = offeredCurrencies[_currency];
         offeredCurrency.rate = _rate;
         offeredCurrency.decimal = _decimal;
     }
 
-    function setAllowedStakeToken(address _stakeToken) external onlyAdmin {
+    function setAllowedStakeToken(address _stakeToken) external onlyRole(SUB_ADMIN_ROLE) {
         StakeToken storage stakeToken = allowedStakeTokens[_stakeToken];
         require(!stakeToken.created, "Allowed token is already existed!");
         stakeToken.created = true;
-    }
-
-    function updateAdmin(address _admin) external onlyOwner {
-        admin = _admin;
     }
 
     /// -----------------------------------
     /// ---------- Core Function ----------
     /// -----------------------------------
 
-    function deposit(uint256 amount, address stakeToken, address referrer) external whenNotPaused nonReentrant {
-        uint contractId = totalStakingContracts;
+    function depositByVault(uint256 _originAmount, uint _lockedAmount, address _user, address _referrer) external override whenNotPaused nonReentrant {
+        require(_msgSender() == address(vault), "pool: Not stake by vault");
+        
+        uint totalStakeAmount = _originAmount + _lockedAmount;
 
+        require(totalStakeAmount > 0, "pool: amount cannot be zero");
+
+        // Forward from vault to smart contract 
+        _forwardRewardToken(address(vault), _originAmount);
+        uint amountOutInUSD = _validateMinimumStakingAmount(address(rewardToken), totalStakeAmount);
+
+        // If user choose to stake with platform token, need to specify which peg token you want to convert to 
+        if (_originAmount > 0) {
+            rewardToken.burn(_originAmount);
+        }
+
+        _joinByReferral(_user, _referrer, totalStakeAmount);
+        _createStakingContract(_user, address(rewardToken), _referrer, totalStakeAmount, amountOutInUSD);
+    
+        _rewardDDXToUser(amountOutInUSD, _user);
+    }
+
+    function deposit(uint256 amount, address stakeToken, address referrer) external whenNotPaused nonReentrant {
         address sender = msg.sender;
 
         require(amount > 0, "pool: amount cannot be zero");
         require(sender != address(0), "pool: stake address can not be zero address");
-
-        StakingInfo storage stakingInfo = stakingContracts[contractId];
 
         // Forward user tokens to smart contract 
         uint stakingAmount = _forwardRewardToken(sender, amount);
@@ -172,75 +201,28 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
             rewardToken.burn(stakingAmount);
         }
 
-        // Validate Referrals
-        if (referrer != address(0)) {
-            require(referredBy[sender] == address(0) && referrer != sender,"pool: user already joined by referral");
-            
-            referredBy[sender] = referrer;
-            totalReferralInvitations[referrer] += 1;
+        _joinByReferral(sender, referrer, stakingAmount);
+        _createStakingContract(sender, stakeToken, referrer, stakingAmount, amountOutInUSD);
 
-            // Give direct intetest to the refferer
-            uint256 directInterestForReffer = stakingAmount * directInterest / INTEREST_RATE_PRECISION_POINT;
-            rewardToken.transferFrom(treasury, referrer, directInterestForReffer);
-        }
-
-        // // Transfer extra DDX reward token to the investor
-        // uint extraRewardTokenAmount = _convertUSDToExtraRewardToken(amountOutInUSD);
-        // if (extraRewardTokenAmount > 0) {
-        //     extraRewardToken.transferFrom(treasury, sender, extraRewardTokenAmount);
-        // }
-
-        stakingInfo.createdAt = uint64(block.timestamp);
-        stakingInfo.lastClaimedTime = uint64(block.timestamp);
-        stakingInfo.lastUpdatedTime = uint64(block.timestamp);
-        stakingInfo.totalStakesInUSD = amountOutInUSD;
-        stakingInfo.totalExpectedInterest =  stakingInfo.totalStakesInUSD  * maximumEarningsInPercent / INTEREST_RATE_PRECISION_POINT;
-        stakingInfo.claimDuration = claimDuration;
-        stakingInfo.dueDate = stakingInfo.createdAt +  stakingInfo.claimDuration;
-
-        totalStaked += stakingAmount;
-        totalStakingContracts++;
-
-        stakingContractOwnedBy[contractId] = sender;
-
-        emit Deposited(sender, stakeToken, referrer, stakingAmount, amountOutInUSD);
+        _rewardDDXToUser(amountOutInUSD, sender);
     }
 
-    function withdraw() external nonReentrant whenNotPaused {
-        address account = msg.sender;
-        
-        StakingInfo storage stakingInfo = stakingContracts[account];
-
-        uint256 rewardsInUSD = pendingRewardInUSD(account);
-
-        uint256 maximumEarnings = stakingInfo.totalStakesInUSD * (INTEREST_RATE_PRECISION_POINT + maximumEarningsInPercent) / INTEREST_RATE_PRECISION_POINT;
-
-        uint256 totalPrincipalAndInterest = rewardsInUSD + stakingInfo.totalStakesInUSD + stakingInfo.claimedInterest;
-        
-        require(totalPrincipalAndInterest >= maximumEarnings, "pool: maximum earning not reached yet");
-
-        uint256 totalWithdrawInUSD = rewardsInUSD + stakingInfo.totalStakesInUSD;
-        uint256 totalWithdrawInRewardInTokens = _convertUSDToRewardToken(totalWithdrawInUSD);
-
-        require(totalWithdrawInRewardInTokens > 0, "pool: Total withdraw must be positive");
-
-        // Transfer the interest amount to owner
-        rewardToken.transferFrom(treasury, account, totalWithdrawInRewardInTokens);
-
-        stakingInfo.totalStakesInUSD = 0;
-        stakingInfo.lastUpdatedTime = uint64(block.timestamp);
-        stakingInfo.lastClaimedTime = uint64(block.timestamp);
-
-        emit Withdraw(msg.sender, totalWithdrawInRewardInTokens);   
+    function claimMultipleRewards(uint[] memory _contractIds) external whenNotPaused {
+        for (uint i; i < _contractIds.length;) {
+            claimReward(_contractIds[i]);
+            unchecked {
+                i++;
+            }
+        }
     }
 
     function claimReward(uint _contractId) public nonReentrant whenNotPaused {
-        address sender = msg.sender;
-        require(stakingContractOwnedBy[_contractId] == sender, "pool: contract id not belongs to this owner");
-        _harvest(sender, _contractId);
+        _harvest(_msgSender(), _contractId);
     }
 
     function _harvest(address _sender, uint _contractId) internal {
+        require(stakingContractOwnedBy[_contractId] == _sender, "pool: contract id not belongs to this owner");
+        
         StakingInfo storage stakingInfo = stakingContracts[_contractId];
 
         uint256 rewardsInUSD = pendingRewardInUSD(_contractId);
@@ -250,19 +232,19 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
 
         // Transfer the interest amount to owner
         rewardToken.transferFrom(treasury, _sender, rewardsInRewardTokens);
-
         
         uint64 lastClaimedTime = uint64(block.timestamp);
 
-        if (lastClaimedTime > uint64(block.timestamp)) {
-            lastClaimedTime = lastClaimedTime;
+        if (lastClaimedTime > stakingInfo.dueDate) {
+            lastClaimedTime = stakingInfo.dueDate;
         }
-        
+
         stakingInfo.lastUpdatedTime = uint64(block.timestamp);
         stakingInfo.lastClaimedTime = lastClaimedTime;
         stakingInfo.claimedInterest += rewardsInUSD;
         
-        emit RewardHarvested(_sender, rewardsInRewardTokens, rewardsInUSD);
+        console.log(_contractId, _sender, rewardsInRewardTokens, rewardsInUSD);
+        emit RewardHarvested(_contractId, _sender, rewardsInRewardTokens, rewardsInUSD);
     }
 
     function pendingRewardInUSD(uint256 _contractId) public view returns (uint256) {
@@ -282,13 +264,6 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
         uint64 passedDuration = uint64(block.timestamp) - stakingInfo.lastClaimedTime; 
 
         uint256 pendingInterest = stakingInfo.totalExpectedInterest * passedDuration * INTEREST_RATE_PRECISION_POINT / claimDuration / INTEREST_RATE_PRECISION_POINT;
-        // uint256 totalPrincipalAndInterest = pendingInterest + stakingInfo.totalStakesInUSD + stakingInfo.claimedInterest;
-
-        // uint256 maximumEarnings = stakingInfo.totalStakesInUSD * maximumEarningsInPercent / INTEREST_RATE_PRECISION_POINT;
-        // // If total principal + interest >= 200% * principal
-        // if (totalPrincipalAndInterest >= maximumEarnings) {
-        //     pendingInterest = maximumEarnings - stakingInfo.totalStakesInUSD - stakingInfo.claimedInterest;
-        // }
 
         return pendingInterest;
     }
@@ -351,6 +326,10 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
         return getStakingAmountByPegToken(address(extraRewardToken), _amountInUSD); 
     }
 
+    function getAmountDWByUSD(uint _amountInUSD) external override returns(uint) {
+        return _convertUSDToRewardToken(_amountInUSD);
+    }
+
     /**
      * @dev Get Staking token amount in offered currencies
      * @param _amount Amount of purchase token
@@ -384,26 +363,57 @@ contract DWStaking is IDChainStaking, Ownable, Pausable, ReentrancyGuard {
         return totalStakingAfter - totalStakingbefore;
     }
 
+    function _joinByReferral(address _sender, address _referrer, uint _stakingAmount) internal {
+        // Validate Referrals
+        if (_referrer != address(0)) {
+            require(referredBy[_sender] == address(0) && _referrer != _sender,"pool: user already joined by referral");
+            
+            referredBy[_sender] = _referrer;
+            totalReferralInvitations[_referrer] += 1;
+
+            // Give direct intetest to the refferer
+            uint256 directInterestForReffer = _stakingAmount * directInterest / INTEREST_RATE_PRECISION_POINT;
+            rewardToken.transferFrom(treasury, _referrer, directInterestForReffer);
+        }
+    }
+
+    function _createStakingContract(address _user, address _stakeToken, address _referrer, uint _stakingAmount, uint _amountOutInUSD) internal {
+        uint contractId = totalStakingContracts;
+
+        StakingInfo storage stakingInfo = stakingContracts[contractId];
+        stakingInfo.createdAt = uint64(block.timestamp);
+        stakingInfo.lastClaimedTime = uint64(block.timestamp);
+        stakingInfo.lastUpdatedTime = uint64(block.timestamp);
+        stakingInfo.totalStakesInUSD = _amountOutInUSD;
+        stakingInfo.totalExpectedInterest =  stakingInfo.totalStakesInUSD  * maximumEarningsInPercent / INTEREST_RATE_PRECISION_POINT;
+        stakingInfo.claimDuration = claimDuration;
+        stakingInfo.dueDate = stakingInfo.createdAt +  stakingInfo.claimDuration;
+
+        totalStaked += _stakingAmount;
+        totalStakingContracts++;
+
+        stakingContractOwnedBy[contractId] = _user;
+
+        emit ContractCreated(contractId, _user, _stakeToken, _referrer, _stakingAmount, _amountOutInUSD);
+    }
+
+    function _rewardDDXToUser(uint _amountOutInUSD, address _user) internal {
+        // Transfer extra DDX reward token to investor
+        uint extraRewardTokenAmount = DDXStaking.getAmountDDXByUSD(_amountOutInUSD);
+        if (extraRewardTokenAmount > 0 && DDXVault.rewardApplicable()) {
+            DDXVault.rewardFromDWStaking(_user, extraRewardTokenAmount);
+        }
+    }
+
     /// -----------------------------------
     /// --------- Pause Function ----------
     /// -----------------------------------
 
-    function pause() external onlyAdmin {
-        poolStatus = false;
+    function pause() external onlyRole(SUB_ADMIN_ROLE) {
         _pause();
     }
 
-    function unpause() external onlyAdmin {
-        poolStatus = true;
+    function unpause() external onlyRole(SUB_ADMIN_ROLE) {
         _unpause();
-    }
-
-    /// --------------------------------
-    /// ------- Modifier Function ------
-    /// --------------------------------
-
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Permission: User is not admin");
-        _;
     }
 }

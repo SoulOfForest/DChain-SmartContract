@@ -1,6 +1,5 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types';
-import { ethers } from 'hardhat';
 import { expandTo18Decimals } from '../utils/bignumber';
 
 const deployDWToken: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -13,9 +12,7 @@ const deployDWToken: DeployFunction = async (hre: HardhatRuntimeEnvironment) => 
         args: [
             'DWToken',
             'DWT',
-            expandTo18Decimals(42000000, 18),
-            "0x40119D8CFFFf7B79B3034460786dE09f57786B0A",
-            "0xBBd707815a7F7eb6897C7686274AFabd7B579Ff6"
+            expandTo18Decimals(42000000000000, 18),
         ],
         log: true,
         deterministicDeployment: false,

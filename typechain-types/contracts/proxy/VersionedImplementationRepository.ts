@@ -33,6 +33,7 @@ export interface VersionedImplementationRepositoryInterface
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "OWNER_ROLE()": FunctionFragment;
     "PAUSER_ROLE()": FunctionFragment;
+    "SUB_ADMIN_ROLE()": FunctionFragment;
     "__DChainBase_init(address)": FunctionFragment;
     "append(address,uint256)": FunctionFragment;
     "append(address)": FunctionFragment;
@@ -66,6 +67,7 @@ export interface VersionedImplementationRepositoryInterface
       | "DEFAULT_ADMIN_ROLE"
       | "OWNER_ROLE"
       | "PAUSER_ROLE"
+      | "SUB_ADMIN_ROLE"
       | "__DChainBase_init"
       | "append(address,uint256)"
       | "append(address)"
@@ -104,6 +106,10 @@ export interface VersionedImplementationRepositoryInterface
   ): string;
   encodeFunctionData(
     functionFragment: "PAUSER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SUB_ADMIN_ROLE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -224,6 +230,10 @@ export interface VersionedImplementationRepositoryInterface
   decodeFunctionResult(functionFragment: "OWNER_ROLE", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "PAUSER_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SUB_ADMIN_ROLE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -472,6 +482,8 @@ export interface VersionedImplementationRepository extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
     __DChainBase_init(
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -613,6 +625,8 @@ export interface VersionedImplementationRepository extends BaseContract {
 
   PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
 
+  SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
   __DChainBase_init(
     owner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -753,6 +767,8 @@ export interface VersionedImplementationRepository extends BaseContract {
     OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     __DChainBase_init(
       owner: PromiseOrValue<string>,
@@ -1011,6 +1027,8 @@ export interface VersionedImplementationRepository extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
     __DChainBase_init(
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1154,6 +1172,8 @@ export interface VersionedImplementationRepository extends BaseContract {
     OWNER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    SUB_ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     __DChainBase_init(
       owner: PromiseOrValue<string>,

@@ -1,23 +1,18 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types';
-import { ethers } from 'hardhat';
+import { expandTo18Decimals } from '../utils/bignumber';
 
-const deployUSDC: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+const deployDDXToken: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts } = hre;
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
 
-    const { address: usdcAddress } = await deploy('FiatTokenV2', {
+    const { address: usdcAddress } = await deploy('DDXToken', {
         from: deployer,
         args: [
-            'USD Coin',
-            'USDC',
-            'USDC',
-            6,
-            deployer,
-            deployer,
-            deployer,
-            deployer,
+            'DDXToken',
+            'DDX',
+            expandTo18Decimals(42000000000000, 18),
         ],
         log: true,
         deterministicDeployment: false,
@@ -29,7 +24,6 @@ const deployUSDC: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     });
 };
 
-deployUSDC.tags = ['USDC'];
-deployUSDC.skip = () => Promise.resolve(true);
+deployDDXToken.tags = ['DDX_TOKEN'];
 
-export default deployUSDC;
+export default deployDDXToken;

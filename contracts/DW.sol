@@ -7,27 +7,20 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20CappedUp
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./interfaces/IRegister.sol";
 
 contract DWToken is ERC20CappedUpgradeable, ERC20BurnableUpgradeable, PausableUpgradeable, OwnableUpgradeable {
     uint256 public constant PRECISION = 10000;
     uint256 public swapFee;
 
-    address feeReceiver;
-    address public sfsContract;
-
     mapping(address => bool) public includeAddress;
 
-    function initialize(string memory name, string memory symbol, uint256 cap, address _feeReceiver, address _sfsContract) public initializer {
+    function initialize(string memory name, string memory symbol, uint256 cap) public initializer {
         __ERC20_init(name, symbol);
         __ERC20Capped_init(cap);
         __ERC20Burnable_init();
         __Ownable_init();
         __Pausable_init();
 
-        feeReceiver = _feeReceiver;
-        sfsContract = _sfsContract;
-        _registerFeeReceiver();
 
         swapFee = 2000; // 20 %
         includeAddress[0x13f4EA83D0bd40E75C8222255bc855a974568Dd4] = true; // Smart router
@@ -42,13 +35,6 @@ contract DWToken is ERC20CappedUpgradeable, ERC20BurnableUpgradeable, PausableUp
     function unpause() public onlyOwner {
         _unpause();
     }
-
-    function updateFeeReceiver(address _feeReceiver) external onlyOwner {
-        require(_feeReceiver != address(0), "Fee receiver can not be zero address");
-        feeReceiver = _feeReceiver;
-        _registerFeeReceiver();
-    }
-
     function updateSwapFee(uint256 _swapFee) external onlyOwner {
         require(_swapFee <= 300, "Token: Swap Fee can not larger than 30%");
         swapFee = _swapFee;
@@ -66,12 +52,6 @@ contract DWToken is ERC20CappedUpgradeable, ERC20BurnableUpgradeable, PausableUp
     function _mint(address account, uint256 amount) internal virtual override(ERC20Upgradeable, ERC20CappedUpgradeable) {
         require(ERC20Upgradeable.totalSupply() + amount <= cap(), "ERC20Capped: cap exceeded");
         super._mint(account, amount);
-    }
-
-    function _registerFeeReceiver() internal {
-        if (sfsContract != address(0)) {
-            IRegister(sfsContract).register(feeReceiver); //Registers this contract and assigns the NFT to the owner of this contract    
-        }
     }
 
     /**

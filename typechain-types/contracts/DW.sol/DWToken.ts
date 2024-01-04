@@ -40,14 +40,13 @@ export interface DWTokenInterface extends utils.Interface {
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "includeAddress(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "initialize(string,string,uint256,address,address)": FunctionFragment;
+    "initialize(string,string,uint256)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "sfsContract()": FunctionFragment;
     "swapFee()": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -55,7 +54,6 @@ export interface DWTokenInterface extends utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unpause()": FunctionFragment;
-    "updateFeeReceiver(address)": FunctionFragment;
     "updateIncludeAddress(address,bool)": FunctionFragment;
     "updateSwapFee(uint256)": FunctionFragment;
   };
@@ -80,7 +78,6 @@ export interface DWTokenInterface extends utils.Interface {
       | "pause"
       | "paused"
       | "renounceOwnership"
-      | "sfsContract"
       | "swapFee"
       | "symbol"
       | "totalSupply"
@@ -88,7 +85,6 @@ export interface DWTokenInterface extends utils.Interface {
       | "transferFrom"
       | "transferOwnership"
       | "unpause"
-      | "updateFeeReceiver"
       | "updateIncludeAddress"
       | "updateSwapFee"
   ): FunctionFragment;
@@ -133,9 +129,7 @@ export interface DWTokenInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
@@ -148,10 +142,6 @@ export interface DWTokenInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sfsContract",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "swapFee", values?: undefined): string;
@@ -177,10 +167,6 @@ export interface DWTokenInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "updateFeeReceiver",
-    values: [PromiseOrValue<string>]
-  ): string;
   encodeFunctionData(
     functionFragment: "updateIncludeAddress",
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
@@ -220,10 +206,6 @@ export interface DWTokenInterface extends utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "sfsContract",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "swapFee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
@@ -240,10 +222,6 @@ export interface DWTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateFeeReceiver",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "updateIncludeAddress",
     data: BytesLike
@@ -409,8 +387,6 @@ export interface DWToken extends BaseContract {
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
       cap: PromiseOrValue<BigNumberish>,
-      _feeReceiver: PromiseOrValue<string>,
-      _sfsContract: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -433,8 +409,6 @@ export interface DWToken extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    sfsContract(overrides?: CallOverrides): Promise<[string]>;
 
     swapFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -461,11 +435,6 @@ export interface DWToken extends BaseContract {
     ): Promise<ContractTransaction>;
 
     unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateFeeReceiver(
-      _feeReceiver: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -536,8 +505,6 @@ export interface DWToken extends BaseContract {
     name: PromiseOrValue<string>,
     symbol: PromiseOrValue<string>,
     cap: PromiseOrValue<BigNumberish>,
-    _feeReceiver: PromiseOrValue<string>,
-    _sfsContract: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -560,8 +527,6 @@ export interface DWToken extends BaseContract {
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  sfsContract(overrides?: CallOverrides): Promise<string>;
 
   swapFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -588,11 +553,6 @@ export interface DWToken extends BaseContract {
   ): Promise<ContractTransaction>;
 
   unpause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateFeeReceiver(
-    _feeReceiver: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -663,8 +623,6 @@ export interface DWToken extends BaseContract {
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
       cap: PromiseOrValue<BigNumberish>,
-      _feeReceiver: PromiseOrValue<string>,
-      _sfsContract: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -683,8 +641,6 @@ export interface DWToken extends BaseContract {
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    sfsContract(overrides?: CallOverrides): Promise<string>;
 
     swapFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -711,11 +667,6 @@ export interface DWToken extends BaseContract {
     ): Promise<void>;
 
     unpause(overrides?: CallOverrides): Promise<void>;
-
-    updateFeeReceiver(
-      _feeReceiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     updateIncludeAddress(
       _includeAddress: PromiseOrValue<string>,
@@ -827,8 +778,6 @@ export interface DWToken extends BaseContract {
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
       cap: PromiseOrValue<BigNumberish>,
-      _feeReceiver: PromiseOrValue<string>,
-      _sfsContract: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -851,8 +800,6 @@ export interface DWToken extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    sfsContract(overrides?: CallOverrides): Promise<BigNumber>;
 
     swapFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -879,11 +826,6 @@ export interface DWToken extends BaseContract {
     ): Promise<BigNumber>;
 
     unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateFeeReceiver(
-      _feeReceiver: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -955,8 +897,6 @@ export interface DWToken extends BaseContract {
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
       cap: PromiseOrValue<BigNumberish>,
-      _feeReceiver: PromiseOrValue<string>,
-      _sfsContract: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -979,8 +919,6 @@ export interface DWToken extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    sfsContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     swapFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1007,11 +945,6 @@ export interface DWToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateFeeReceiver(
-      _feeReceiver: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
