@@ -5,25 +5,26 @@ import { expandTo18Decimals } from '../utils/bignumber';
 const deployDWToken: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts } = hre;
     const { deploy } = deployments;
-    const { deployer } = await getNamedAccounts();
+    const { deployer, fund, community, team, marketing, ido, farming, liquidity } = await getNamedAccounts();
 
-    const { address: usdcAddress } = await deploy('DWToken', {
+    const { address: dgwTokenAddress } = await deploy('DGWToken', {
         from: deployer,
         args: [
-            'DWToken',
-            'DWT',
-            expandTo18Decimals(42000000000000, 18),
+            'DGWToken',
+            'DGW',
+            "0x8cb0300Af2A801DC9992225D45399ac56888cBcd", // UNCX
+            ido,
+            farming,
+            liquidity,
+            marketing,
+            community
         ],
         log: true,
-        deterministicDeployment: false,
-        proxy: {
-            proxyContract: 'OpenZeppelinTransparentProxy',
-            upgradeIndex: 0,
-            methodName: 'initialize',
-        },
+        deterministicDeployment: false
     });
 };
 
 deployDWToken.tags = ['DW_TOKEN'];
+deployDWToken.skip = () => Promise.resolve(true);
 
 export default deployDWToken;

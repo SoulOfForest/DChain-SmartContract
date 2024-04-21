@@ -4,8 +4,8 @@ pragma solidity ^0.7.6;
 
 import "@uniswap/lib/contracts/libraries/FixedPoint.sol";
 
-import "../interfaces/IPancakeFactory.sol";
-import "../interfaces/IPancakePair.sol";
+import "../interfaces/pancake/IPancakeFactory.sol";
+import "../interfaces/pancake/IPancakePair.sol";
 
 import '../libraries/PancakeOracleLibrary.sol';
 import '../libraries/PancakeLibrary.sol';

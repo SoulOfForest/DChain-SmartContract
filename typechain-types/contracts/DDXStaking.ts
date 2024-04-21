@@ -56,10 +56,12 @@ export interface DDXStakingInterface extends utils.Interface {
     "pendingRewardInUSD(uint256,address)": FunctionFragment;
     "poolInfo(uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
+    "restakeWithVault(uint256,uint256,uint256,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "rewardToken()": FunctionFragment;
     "setDDXVault(address)": FunctionFragment;
     "setOfferedCurrency(address,uint256,uint256)": FunctionFragment;
+    "setPoolPeriod(uint256,uint64)": FunctionFragment;
     "stakingInfos(uint256,address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "totalStaked()": FunctionFragment;
@@ -98,10 +100,12 @@ export interface DDXStakingInterface extends utils.Interface {
       | "pendingRewardInUSD"
       | "poolInfo"
       | "renounceRole"
+      | "restakeWithVault"
       | "revokeRole"
       | "rewardToken"
       | "setDDXVault"
       | "setOfferedCurrency"
+      | "setPoolPeriod"
       | "stakingInfos"
       | "supportsInterface"
       | "totalStaked"
@@ -217,6 +221,15 @@ export interface DDXStakingInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "restakeWithVault",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "revokeRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
@@ -235,6 +248,10 @@ export interface DDXStakingInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPoolPeriod",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "stakingInfos",
@@ -325,6 +342,10 @@ export interface DDXStakingInterface extends utils.Interface {
     functionFragment: "renounceRole",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "restakeWithVault",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rewardToken",
@@ -336,6 +357,10 @@ export interface DDXStakingInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setOfferedCurrency",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setPoolPeriod",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -356,7 +381,7 @@ export interface DDXStakingInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
-    "ContractCreated(uint256,address,address,address,uint256,uint256)": EventFragment;
+    "Deposited(uint256,address,uint256,uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "Paused(address)": EventFragment;
     "PoolAdded(uint256,uint64,uint128)": EventFragment;
@@ -364,13 +389,12 @@ export interface DDXStakingInterface extends utils.Interface {
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
-    "StakingContractCreated(address,address,uint256,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "Withdraw(address,uint256)": EventFragment;
     "Withdrawed(address,uint256,uint256,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "ContractCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PoolAdded"): EventFragment;
@@ -378,26 +402,23 @@ export interface DDXStakingInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "StakingContractCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdrawed"): EventFragment;
 }
 
-export interface ContractCreatedEventObject {
-  contractId: BigNumber;
+export interface DepositedEventObject {
+  pid: BigNumber;
   user: string;
-  stakeToken: string;
-  referrer: string;
   amount: BigNumber;
   amountInUSD: BigNumber;
 }
-export type ContractCreatedEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, BigNumber],
-  ContractCreatedEventObject
+export type DepositedEvent = TypedEvent<
+  [BigNumber, string, BigNumber, BigNumber],
+  DepositedEventObject
 >;
 
-export type ContractCreatedEventFilter = TypedEventFilter<ContractCreatedEvent>;
+export type DepositedEventFilter = TypedEventFilter<DepositedEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -474,20 +495,6 @@ export type RoleRevokedEvent = TypedEvent<
 >;
 
 export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
-
-export interface StakingContractCreatedEventObject {
-  user: string;
-  referrer: string;
-  contractId: BigNumber;
-  stakingAmount: BigNumber;
-}
-export type StakingContractCreatedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  StakingContractCreatedEventObject
->;
-
-export type StakingContractCreatedEventFilter =
-  TypedEventFilter<StakingContractCreatedEvent>;
 
 export interface UnpausedEventObject {
   account: string;
@@ -676,6 +683,14 @@ export interface DDXStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     revokeRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -696,6 +711,12 @@ export interface DDXStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setPoolPeriod(
+      _pid: PromiseOrValue<BigNumberish>,
+      _period: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     stakingInfos(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<string>,
@@ -708,8 +729,10 @@ export interface DDXStaking extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
+        totalStakes: BigNumber;
         totalStakesInUSD: BigNumber;
         claimedInterest: BigNumber;
         dueDate: BigNumber;
@@ -868,6 +891,14 @@ export interface DDXStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  restakeWithVault(
+    _pid: PromiseOrValue<BigNumberish>,
+    _originAmount: PromiseOrValue<BigNumberish>,
+    _lockedAmount: PromiseOrValue<BigNumberish>,
+    _user: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   revokeRole(
     role: PromiseOrValue<BytesLike>,
     account: PromiseOrValue<string>,
@@ -888,6 +919,12 @@ export interface DDXStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setPoolPeriod(
+    _pid: PromiseOrValue<BigNumberish>,
+    _period: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   stakingInfos(
     arg0: PromiseOrValue<BigNumberish>,
     arg1: PromiseOrValue<string>,
@@ -900,8 +937,10 @@ export interface DDXStaking extends BaseContract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       BigNumber
     ] & {
+      totalStakes: BigNumber;
       totalStakesInUSD: BigNumber;
       claimedInterest: BigNumber;
       dueDate: BigNumber;
@@ -1060,6 +1099,14 @@ export interface DDXStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     revokeRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -1080,6 +1127,12 @@ export interface DDXStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setPoolPeriod(
+      _pid: PromiseOrValue<BigNumberish>,
+      _period: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     stakingInfos(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<string>,
@@ -1092,8 +1145,10 @@ export interface DDXStaking extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
+        totalStakes: BigNumber;
         totalStakesInUSD: BigNumber;
         claimedInterest: BigNumber;
         dueDate: BigNumber;
@@ -1124,22 +1179,18 @@ export interface DDXStaking extends BaseContract {
   };
 
   filters: {
-    "ContractCreated(uint256,address,address,address,uint256,uint256)"(
-      contractId?: PromiseOrValue<BigNumberish> | null,
+    "Deposited(uint256,address,uint256,uint256)"(
+      pid?: PromiseOrValue<BigNumberish> | null,
       user?: PromiseOrValue<string> | null,
-      stakeToken?: PromiseOrValue<string> | null,
-      referrer?: null,
       amount?: null,
       amountInUSD?: null
-    ): ContractCreatedEventFilter;
-    ContractCreated(
-      contractId?: PromiseOrValue<BigNumberish> | null,
+    ): DepositedEventFilter;
+    Deposited(
+      pid?: PromiseOrValue<BigNumberish> | null,
       user?: PromiseOrValue<string> | null,
-      stakeToken?: PromiseOrValue<string> | null,
-      referrer?: null,
       amount?: null,
       amountInUSD?: null
-    ): ContractCreatedEventFilter;
+    ): DepositedEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
@@ -1203,19 +1254,6 @@ export interface DDXStaking extends BaseContract {
       account?: PromiseOrValue<string> | null,
       sender?: PromiseOrValue<string> | null
     ): RoleRevokedEventFilter;
-
-    "StakingContractCreated(address,address,uint256,uint256)"(
-      user?: PromiseOrValue<string> | null,
-      referrer?: PromiseOrValue<string> | null,
-      contractId?: PromiseOrValue<BigNumberish> | null,
-      stakingAmount?: null
-    ): StakingContractCreatedEventFilter;
-    StakingContractCreated(
-      user?: PromiseOrValue<string> | null,
-      referrer?: PromiseOrValue<string> | null,
-      contractId?: PromiseOrValue<BigNumberish> | null,
-      stakingAmount?: null
-    ): StakingContractCreatedEventFilter;
 
     "Unpaused(address)"(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
@@ -1364,6 +1402,14 @@ export interface DDXStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     revokeRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -1381,6 +1427,12 @@ export interface DDXStaking extends BaseContract {
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
       _decimal: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setPoolPeriod(
+      _pid: PromiseOrValue<BigNumberish>,
+      _period: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1536,6 +1588,14 @@ export interface DDXStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     revokeRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -1553,6 +1613,12 @@ export interface DDXStaking extends BaseContract {
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
       _decimal: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setPoolPeriod(
+      _pid: PromiseOrValue<BigNumberish>,
+      _period: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

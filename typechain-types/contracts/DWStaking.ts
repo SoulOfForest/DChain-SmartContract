@@ -27,6 +27,45 @@ import type {
   PromiseOrValue,
 } from "../common";
 
+export declare namespace DWStaking {
+  export type StakingInfoStruct = {
+    totalExpectedInterest: PromiseOrValue<BigNumberish>;
+    totalStakesInUSD: PromiseOrValue<BigNumberish>;
+    claimedInterest: PromiseOrValue<BigNumberish>;
+    claimDuration: PromiseOrValue<BigNumberish>;
+    dueDate: PromiseOrValue<BigNumberish>;
+    lastClaimedTime: PromiseOrValue<BigNumberish>;
+    lastUpdatedTime: PromiseOrValue<BigNumberish>;
+    createdAt: PromiseOrValue<BigNumberish>;
+    stakeToken: PromiseOrValue<string>;
+    totalStakesInToken: PromiseOrValue<BigNumberish>;
+  };
+
+  export type StakingInfoStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    string,
+    BigNumber
+  ] & {
+    totalExpectedInterest: BigNumber;
+    totalStakesInUSD: BigNumber;
+    claimedInterest: BigNumber;
+    claimDuration: BigNumber;
+    dueDate: BigNumber;
+    lastClaimedTime: BigNumber;
+    lastUpdatedTime: BigNumber;
+    createdAt: BigNumber;
+    stakeToken: string;
+    totalStakesInToken: BigNumber;
+  };
+}
+
 export interface DWStakingInterface extends utils.Interface {
   functions: {
     "DDXStaking()": FunctionFragment;
@@ -45,10 +84,13 @@ export interface DWStakingInterface extends utils.Interface {
     "commissionInterestLevels(uint256)": FunctionFragment;
     "deposit(uint256,address,address)": FunctionFragment;
     "depositByVault(uint256,uint256,address,address)": FunctionFragment;
+    "directBonus(address)": FunctionFragment;
     "directInterest()": FunctionFragment;
     "emergencyCancelled()": FunctionFragment;
     "extraRewardToken()": FunctionFragment;
+    "getAllPendingRewards(uint256[])": FunctionFragment;
     "getAmountDWByUSD(uint256)": FunctionFragment;
+    "getMultipleContractInfos(uint256[])": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getStakingAmountByPegToken(address,uint256)": FunctionFragment;
     "getStakingAmountInUSD(address,uint256)": FunctionFragment;
@@ -68,6 +110,7 @@ export interface DWStakingInterface extends utils.Interface {
     "rewardToken()": FunctionFragment;
     "setAllowedStakeToken(address)": FunctionFragment;
     "setAssetOracle(address,address)": FunctionFragment;
+    "setClaimDuration(uint64)": FunctionFragment;
     "setDDXStaking(address)": FunctionFragment;
     "setDDXVault(address)": FunctionFragment;
     "setDWVault(address)": FunctionFragment;
@@ -101,10 +144,13 @@ export interface DWStakingInterface extends utils.Interface {
       | "commissionInterestLevels"
       | "deposit"
       | "depositByVault"
+      | "directBonus"
       | "directInterest"
       | "emergencyCancelled"
       | "extraRewardToken"
+      | "getAllPendingRewards"
       | "getAmountDWByUSD"
+      | "getMultipleContractInfos"
       | "getRoleAdmin"
       | "getStakingAmountByPegToken"
       | "getStakingAmountInUSD"
@@ -124,6 +170,7 @@ export interface DWStakingInterface extends utils.Interface {
       | "rewardToken"
       | "setAllowedStakeToken"
       | "setAssetOracle"
+      | "setClaimDuration"
       | "setDDXStaking"
       | "setDDXVault"
       | "setDWVault"
@@ -207,6 +254,10 @@ export interface DWStakingInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "directBonus",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "directInterest",
     values?: undefined
   ): string;
@@ -219,8 +270,16 @@ export interface DWStakingInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getAllPendingRewards",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getAmountDWByUSD",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMultipleContractInfos",
+    values: [PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
@@ -293,6 +352,10 @@ export interface DWStakingInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setAssetOracle",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setClaimDuration",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "setDDXStaking",
@@ -392,6 +455,10 @@ export interface DWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "directBonus",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "directInterest",
     data: BytesLike
   ): Result;
@@ -404,7 +471,15 @@ export interface DWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getAllPendingRewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getAmountDWByUSD",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMultipleContractInfos",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -460,6 +535,10 @@ export interface DWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setClaimDuration",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setDDXStaking",
     data: BytesLike
   ): Result;
@@ -501,7 +580,7 @@ export interface DWStakingInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
-    "ContractCreated(uint256,address,address,address,uint256,uint256)": EventFragment;
+    "ContractCreated(uint256,address,address,address,uint256,uint256,uint256,uint64)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "Paused(address)": EventFragment;
     "RewardHarvested(uint256,address,uint256,uint256)": EventFragment;
@@ -532,9 +611,20 @@ export interface ContractCreatedEventObject {
   referrer: string;
   amount: BigNumber;
   amountInUSD: BigNumber;
+  interestAmountInUSD: BigNumber;
+  dueDate: BigNumber;
 }
 export type ContractCreatedEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, BigNumber],
+  [
+    BigNumber,
+    string,
+    string,
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ],
   ContractCreatedEventObject
 >;
 
@@ -724,16 +814,31 @@ export interface DWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    directBonus(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     directInterest(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     emergencyCancelled(overrides?: CallOverrides): Promise<[boolean]>;
 
     extraRewardToken(overrides?: CallOverrides): Promise<[string]>;
 
+    getAllPendingRewards(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getAmountDWByUSD(
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    getMultipleContractInfos(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[DWStaking.StakingInfoStructOutput[]]>;
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
@@ -826,6 +931,11 @@ export interface DWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setClaimDuration(
+      _claimDuration: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setDDXStaking(
       _staking: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -865,6 +975,8 @@ export interface DWStaking extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        string,
         BigNumber
       ] & {
         totalExpectedInterest: BigNumber;
@@ -875,6 +987,8 @@ export interface DWStaking extends BaseContract {
         lastClaimedTime: BigNumber;
         lastUpdatedTime: BigNumber;
         createdAt: BigNumber;
+        stakeToken: string;
+        totalStakesInToken: BigNumber;
       }
     >;
 
@@ -962,16 +1076,31 @@ export interface DWStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  directBonus(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   directInterest(overrides?: CallOverrides): Promise<BigNumber>;
 
   emergencyCancelled(overrides?: CallOverrides): Promise<boolean>;
 
   extraRewardToken(overrides?: CallOverrides): Promise<string>;
 
+  getAllPendingRewards(
+    _contractIds: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getAmountDWByUSD(
     _amountInUSD: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  getMultipleContractInfos(
+    _contractIds: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<DWStaking.StakingInfoStructOutput[]>;
 
   getRoleAdmin(
     role: PromiseOrValue<BytesLike>,
@@ -1062,6 +1191,11 @@ export interface DWStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setClaimDuration(
+    _claimDuration: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setDDXStaking(
     _staking: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1101,6 +1235,8 @@ export interface DWStaking extends BaseContract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
+      string,
       BigNumber
     ] & {
       totalExpectedInterest: BigNumber;
@@ -1111,6 +1247,8 @@ export interface DWStaking extends BaseContract {
       lastClaimedTime: BigNumber;
       lastUpdatedTime: BigNumber;
       createdAt: BigNumber;
+      stakeToken: string;
+      totalStakesInToken: BigNumber;
     }
   >;
 
@@ -1198,16 +1336,31 @@ export interface DWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    directBonus(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     directInterest(overrides?: CallOverrides): Promise<BigNumber>;
 
     emergencyCancelled(overrides?: CallOverrides): Promise<boolean>;
 
     extraRewardToken(overrides?: CallOverrides): Promise<string>;
 
+    getAllPendingRewards(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAmountDWByUSD(
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getMultipleContractInfos(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<DWStaking.StakingInfoStructOutput[]>;
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
@@ -1298,6 +1451,11 @@ export interface DWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setClaimDuration(
+      _claimDuration: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setDDXStaking(
       _staking: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1337,6 +1495,8 @@ export interface DWStaking extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        string,
         BigNumber
       ] & {
         totalExpectedInterest: BigNumber;
@@ -1347,6 +1507,8 @@ export interface DWStaking extends BaseContract {
         lastClaimedTime: BigNumber;
         lastUpdatedTime: BigNumber;
         createdAt: BigNumber;
+        stakeToken: string;
+        totalStakesInToken: BigNumber;
       }
     >;
 
@@ -1372,13 +1534,15 @@ export interface DWStaking extends BaseContract {
   };
 
   filters: {
-    "ContractCreated(uint256,address,address,address,uint256,uint256)"(
+    "ContractCreated(uint256,address,address,address,uint256,uint256,uint256,uint64)"(
       contractId?: PromiseOrValue<BigNumberish> | null,
       user?: PromiseOrValue<string> | null,
       stakeToken?: PromiseOrValue<string> | null,
       referrer?: null,
       amount?: null,
-      amountInUSD?: null
+      amountInUSD?: null,
+      interestAmountInUSD?: null,
+      dueDate?: null
     ): ContractCreatedEventFilter;
     ContractCreated(
       contractId?: PromiseOrValue<BigNumberish> | null,
@@ -1386,7 +1550,9 @@ export interface DWStaking extends BaseContract {
       stakeToken?: PromiseOrValue<string> | null,
       referrer?: null,
       amount?: null,
-      amountInUSD?: null
+      amountInUSD?: null,
+      interestAmountInUSD?: null,
+      dueDate?: null
     ): ContractCreatedEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
@@ -1529,15 +1695,30 @@ export interface DWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    directBonus(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     directInterest(overrides?: CallOverrides): Promise<BigNumber>;
 
     emergencyCancelled(overrides?: CallOverrides): Promise<BigNumber>;
 
     extraRewardToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getAllPendingRewards(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAmountDWByUSD(
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getMultipleContractInfos(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getRoleAdmin(
@@ -1626,6 +1807,11 @@ export interface DWStaking extends BaseContract {
     setAssetOracle(
       _pegToken: PromiseOrValue<string>,
       _oracle: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setClaimDuration(
+      _claimDuration: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1748,6 +1934,11 @@ export interface DWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    directBonus(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     directInterest(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     emergencyCancelled(
@@ -1756,9 +1947,19 @@ export interface DWStaking extends BaseContract {
 
     extraRewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getAllPendingRewards(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getAmountDWByUSD(
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getMultipleContractInfos(
+      _contractIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getRoleAdmin(
@@ -1851,6 +2052,11 @@ export interface DWStaking extends BaseContract {
     setAssetOracle(
       _pegToken: PromiseOrValue<string>,
       _oracle: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setClaimDuration(
+      _claimDuration: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

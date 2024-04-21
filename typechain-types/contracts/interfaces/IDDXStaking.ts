@@ -27,10 +27,14 @@ export interface IDDXStakingInterface extends utils.Interface {
   functions: {
     "depositByVault(uint256,uint256,uint256,address)": FunctionFragment;
     "getAmountDDXByUSD(uint256)": FunctionFragment;
+    "restakeWithVault(uint256,uint256,uint256,address)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "depositByVault" | "getAmountDDXByUSD"
+    nameOrSignatureOrTopic:
+      | "depositByVault"
+      | "getAmountDDXByUSD"
+      | "restakeWithVault"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -46,6 +50,15 @@ export interface IDDXStakingInterface extends utils.Interface {
     functionFragment: "getAmountDDXByUSD",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "restakeWithVault",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "depositByVault",
@@ -53,6 +66,10 @@ export interface IDDXStakingInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAmountDDXByUSD",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "restakeWithVault",
     data: BytesLike
   ): Result;
 
@@ -98,6 +115,14 @@ export interface IDDXStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   depositByVault(
@@ -110,6 +135,14 @@ export interface IDDXStaking extends BaseContract {
 
   getAmountDDXByUSD(
     _amountInUSD: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  restakeWithVault(
+    _pid: PromiseOrValue<BigNumberish>,
+    _originAmount: PromiseOrValue<BigNumberish>,
+    _lockedAmount: PromiseOrValue<BigNumberish>,
+    _user: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -126,6 +159,14 @@ export interface IDDXStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
@@ -143,6 +184,14 @@ export interface IDDXStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -156,6 +205,14 @@ export interface IDDXStaking extends BaseContract {
 
     getAmountDDXByUSD(
       _amountInUSD: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    restakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      _user: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

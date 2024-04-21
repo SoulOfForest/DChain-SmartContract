@@ -2,8 +2,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import { ContractAddresses_42161 } from './42161'
 import { ContractAddresses_421614 } from './421614'
 export type ContractAddressesKey = keyof typeof ContractAddresses
 export const ContractAddresses = {
+  42161: ContractAddresses_42161,
   421614: ContractAddresses_421614
 }

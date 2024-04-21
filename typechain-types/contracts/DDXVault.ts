@@ -76,7 +76,6 @@ export interface DDXVaultInterface extends utils.Interface {
     "computeNextVestingScheduleIdForHolder(address)": FunctionFragment;
     "computeVestingScheduleIdForAddressAndIndex(address,uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
-    "getVestingSchedule(bytes32)": FunctionFragment;
     "getVestingScheduleByAddressAndIndex(address,uint256)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
@@ -84,13 +83,14 @@ export interface DDXVaultInterface extends utils.Interface {
     "isAdmin()": FunctionFragment;
     "multipleRelease(bytes32[])": FunctionFragment;
     "paused()": FunctionFragment;
+    "reStakeWithVault(uint256,uint256,uint256)": FunctionFragment;
     "release(bytes32)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "rewardApplicable()": FunctionFragment;
     "rewardFromDWStaking(address,uint256)": FunctionFragment;
     "rewardToken()": FunctionFragment;
-    "stakeWithVault(uint256,uint256)": FunctionFragment;
+    "stakeWithVault(uint256,uint256,uint256)": FunctionFragment;
     "startVestingTime()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "toggleRewardApplicable()": FunctionFragment;
@@ -112,7 +112,6 @@ export interface DDXVaultInterface extends utils.Interface {
       | "computeNextVestingScheduleIdForHolder"
       | "computeVestingScheduleIdForAddressAndIndex"
       | "getRoleAdmin"
-      | "getVestingSchedule"
       | "getVestingScheduleByAddressAndIndex"
       | "grantRole"
       | "hasRole"
@@ -120,6 +119,7 @@ export interface DDXVaultInterface extends utils.Interface {
       | "isAdmin"
       | "multipleRelease"
       | "paused"
+      | "reStakeWithVault"
       | "release"
       | "renounceRole"
       | "revokeRole"
@@ -174,10 +174,6 @@ export interface DDXVaultInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getVestingSchedule",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getVestingScheduleByAddressAndIndex",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
@@ -207,6 +203,14 @@ export interface DDXVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "reStakeWithVault",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "release",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -232,7 +236,11 @@ export interface DDXVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "stakeWithVault",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "startVestingTime",
@@ -289,10 +297,6 @@ export interface DDXVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getVestingSchedule",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getVestingScheduleByAddressAndIndex",
     data: BytesLike
   ): Result;
@@ -305,6 +309,10 @@ export interface DDXVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "reStakeWithVault",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
@@ -486,11 +494,6 @@ export interface DDXVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getVestingSchedule(
-      vestingScheduleId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[DDXVault.VestingScheduleStructOutput]>;
-
     getVestingScheduleByAddressAndIndex(
       holder: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
@@ -528,6 +531,13 @@ export interface DDXVault extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
+    reStakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     release(
       vestingScheduleId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -556,6 +566,7 @@ export interface DDXVault extends BaseContract {
     rewardToken(overrides?: CallOverrides): Promise<[string]>;
 
     stakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
       _originAmount: PromiseOrValue<BigNumberish>,
       _lockedAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -614,11 +625,6 @@ export interface DDXVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getVestingSchedule(
-    vestingScheduleId: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<DDXVault.VestingScheduleStructOutput>;
-
   getVestingScheduleByAddressAndIndex(
     holder: PromiseOrValue<string>,
     index: PromiseOrValue<BigNumberish>,
@@ -656,6 +662,13 @@ export interface DDXVault extends BaseContract {
 
   paused(overrides?: CallOverrides): Promise<boolean>;
 
+  reStakeWithVault(
+    _pid: PromiseOrValue<BigNumberish>,
+    _originAmount: PromiseOrValue<BigNumberish>,
+    _lockedAmount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   release(
     vestingScheduleId: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -684,6 +697,7 @@ export interface DDXVault extends BaseContract {
   rewardToken(overrides?: CallOverrides): Promise<string>;
 
   stakeWithVault(
+    _pid: PromiseOrValue<BigNumberish>,
     _originAmount: PromiseOrValue<BigNumberish>,
     _lockedAmount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -742,11 +756,6 @@ export interface DDXVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getVestingSchedule(
-      vestingScheduleId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<DDXVault.VestingScheduleStructOutput>;
-
     getVestingScheduleByAddressAndIndex(
       holder: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
@@ -784,6 +793,13 @@ export interface DDXVault extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
+    reStakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     release(
       vestingScheduleId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -812,6 +828,7 @@ export interface DDXVault extends BaseContract {
     rewardToken(overrides?: CallOverrides): Promise<string>;
 
     stakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
       _originAmount: PromiseOrValue<BigNumberish>,
       _lockedAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -913,11 +930,6 @@ export interface DDXVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getVestingSchedule(
-      vestingScheduleId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getVestingScheduleByAddressAndIndex(
       holder: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
@@ -955,6 +967,13 @@ export interface DDXVault extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
+    reStakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     release(
       vestingScheduleId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -983,6 +1002,7 @@ export interface DDXVault extends BaseContract {
     rewardToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     stakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
       _originAmount: PromiseOrValue<BigNumberish>,
       _lockedAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1044,11 +1064,6 @@ export interface DDXVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getVestingSchedule(
-      vestingScheduleId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getVestingScheduleByAddressAndIndex(
       holder: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
@@ -1086,6 +1101,13 @@ export interface DDXVault extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    reStakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
+      _originAmount: PromiseOrValue<BigNumberish>,
+      _lockedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     release(
       vestingScheduleId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1114,6 +1136,7 @@ export interface DDXVault extends BaseContract {
     rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     stakeWithVault(
+      _pid: PromiseOrValue<BigNumberish>,
       _originAmount: PromiseOrValue<BigNumberish>,
       _lockedAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }

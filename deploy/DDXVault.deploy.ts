@@ -2,31 +2,29 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types';
 
 const MONTH_IN_SECONDS = 30 * 24 * 60 * 60;
-const ddxStartVestingTime = Math.floor(new Date().getTime() / 1000) + 12 * MONTH_IN_SECONDS; // 1 year after start selling IDO
+const ddxStartVestingTime = Math.floor(new Date().getTime() / 1000) + 18 * MONTH_IN_SECONDS; // 1 year after start selling IDO
 
 const deployDDXVault: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts } = hre;
     const { deploy } = deployments;
-    const { deployer, treasury, owner } = await getNamedAccounts();
+    const { deployer, farming, owner } = await getNamedAccounts();
 
-    const ddxTokenAddress = (
-        await deployments.get('DDXToken_Proxy')
-    ).address;
+    const ddxTokenAddress = process.env.DDX_ADDRESS;;
 
     const dwStakingAddress = (
-        await deployments.get('DWStaking_Proxy')
+        await deployments.get('DGWStaking_Proxy')
     ).address;
 
     const ddxStakingAddress = (
-        await deployments.get('DDXStaking_Proxy')
+        await deployments.get('DGEStaking_Proxy')
     ).address;
 
-    const { address: dwVaultAddress } = await deploy('DDXVault', {
+    const { address: dwVaultAddress } = await deploy('DGEVault', {
         from: deployer,
         args: [
             owner,
             ddxTokenAddress,
-            treasury,
+            farming,
             dwStakingAddress,
             ddxStakingAddress,
             ddxStartVestingTime
@@ -42,6 +40,6 @@ const deployDDXVault: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
 };
 
 deployDDXVault.tags = ['DDX_VAULT'];
-deployDDXVault.dependencies = ['DDX_TOKEN', 'DW_STAKING', 'DDX_STAKING'];
+deployDDXVault.dependencies = ['DW_STAKING', 'DDX_STAKING'];
 
 export default deployDDXVault;

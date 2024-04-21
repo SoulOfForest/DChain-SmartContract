@@ -43,7 +43,7 @@ export const SUPPORTED_ETHERSCAN_NETWORKS = [
   "fuji",
   "binancetest",
   "bsc",
-  "arbitrumGoerli",
+  "arbitrum",
   "arbitrumSepolia",
   "sepolia",
 ];

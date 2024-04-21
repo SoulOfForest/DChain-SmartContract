@@ -1,9 +1,7 @@
-//SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.7.6;
+pragma solidity >=0.5.0;
 
+import '../interfaces/pancake/IPancakePair.sol';
 
-
-import "../interfaces/IPancakePair.sol";
 import "./SafeMath.sol";
 
 library PancakeLibrary {
@@ -19,15 +17,12 @@ library PancakeLibrary {
     // calculates the CREATE2 address for a pair without making any external calls
     function pairFor(address factory, address tokenA, address tokenB) internal pure returns (address pair) {
         (address token0, address token1) = sortTokens(tokenA, tokenB);
-
         pair = address(uint(keccak256(abi.encodePacked(
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                // hex'd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66' // init code hash 
-                hex'00fb7f630766e6a796048ea87d01acd3068e8ff67d078148a3fa3f4a84f69bd5' // init code hash mainnet
+                hex'57224589c67f3f30a6b0d7a1b54cf3153ab84563bc609ef41dfb34f8b2974d2d' // init code hash
             ))));
-
     }
 
     // fetches and sorts the reserves for a pair

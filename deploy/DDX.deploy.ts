@@ -7,12 +7,11 @@ const deployDDXToken: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
 
-    const { address: usdcAddress } = await deploy('DDXToken', {
+    const { address: usdcAddress } = await deploy('DGEToken', {
         from: deployer,
         args: [
-            'DDXToken',
-            'DDX',
-            expandTo18Decimals(42000000000000, 18),
+            'DGEToken',
+            'DGE',
         ],
         log: true,
         deterministicDeployment: false,
@@ -25,5 +24,6 @@ const deployDDXToken: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
 };
 
 deployDDXToken.tags = ['DDX_TOKEN'];
+deployDDXToken.skip = () => Promise.resolve(true);
 
 export default deployDDXToken;

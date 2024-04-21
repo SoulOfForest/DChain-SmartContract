@@ -36,12 +36,13 @@ export interface DWVaultInterface extends utils.Interface {
     "SUB_ADMIN_ROLE()": FunctionFragment;
     "__DChainBase_init(address)": FunctionFragment;
     "admin()": FunctionFragment;
-    "availableToStakeThroughVault()": FunctionFragment;
+    "availableToStakeThroughVault(address)": FunctionFragment;
     "buyTokenWithToken(address,address,uint256)": FunctionFragment;
     "claim(address)": FunctionFragment;
     "closeTime()": FunctionFragment;
     "fundReceiver()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
+    "getSoldTokenFromOfferedCurrency(address,uint256)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,address,address,address,address,uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
@@ -55,6 +56,8 @@ export interface DWVaultInterface extends utils.Interface {
     "release()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
+    "setCloseTime(uint256)": FunctionFragment;
+    "setLockBeforeVesting(uint256)": FunctionFragment;
     "setOfferedCurrency(address,uint256,uint256)": FunctionFragment;
     "setTGEPercentage(uint256)": FunctionFragment;
     "setTotalRaiseAmount(uint256)": FunctionFragment;
@@ -62,6 +65,7 @@ export interface DWVaultInterface extends utils.Interface {
     "stakeWithVault(uint256,uint256,address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "tgePercentage()": FunctionFragment;
+    "totalPurchased(address)": FunctionFragment;
     "totalRaiseAmount()": FunctionFragment;
     "totalRaised()": FunctionFragment;
     "totalSold()": FunctionFragment;
@@ -86,6 +90,7 @@ export interface DWVaultInterface extends utils.Interface {
       | "closeTime"
       | "fundReceiver"
       | "getRoleAdmin"
+      | "getSoldTokenFromOfferedCurrency"
       | "grantRole"
       | "hasRole"
       | "initialize"
@@ -99,6 +104,8 @@ export interface DWVaultInterface extends utils.Interface {
       | "release"
       | "renounceRole"
       | "revokeRole"
+      | "setCloseTime"
+      | "setLockBeforeVesting"
       | "setOfferedCurrency"
       | "setTGEPercentage"
       | "setTotalRaiseAmount"
@@ -106,6 +113,7 @@ export interface DWVaultInterface extends utils.Interface {
       | "stakeWithVault"
       | "supportsInterface"
       | "tgePercentage"
+      | "totalPurchased"
       | "totalRaiseAmount"
       | "totalRaised"
       | "totalSold"
@@ -139,7 +147,7 @@ export interface DWVaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "availableToStakeThroughVault",
-    values?: undefined
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "buyTokenWithToken",
@@ -161,6 +169,10 @@ export interface DWVaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
     values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSoldTokenFromOfferedCurrency",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "grantRole",
@@ -214,6 +226,14 @@ export interface DWVaultInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setCloseTime",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setLockBeforeVesting",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setOfferedCurrency",
     values: [
       PromiseOrValue<string>,
@@ -245,6 +265,10 @@ export interface DWVaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "tgePercentage",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalPurchased",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "totalRaiseAmount",
@@ -306,6 +330,10 @@ export interface DWVaultInterface extends utils.Interface {
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSoldTokenFromOfferedCurrency",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -335,6 +363,14 @@ export interface DWVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "setCloseTime",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setLockBeforeVesting",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setOfferedCurrency",
     data: BytesLike
   ): Result;
@@ -357,6 +393,10 @@ export interface DWVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "tgePercentage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalPurchased",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -545,7 +585,10 @@ export interface DWVault extends BaseContract {
 
     admin(overrides?: CallOverrides): Promise<[string]>;
 
-    availableToStakeThroughVault(overrides?: CallOverrides): Promise<[boolean]>;
+    availableToStakeThroughVault(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -567,6 +610,12 @@ export interface DWVault extends BaseContract {
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getSoldTokenFromOfferedCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     grantRole(
       role: PromiseOrValue<BytesLike>,
@@ -639,6 +688,16 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setCloseTime(
+      _closeTime: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setLockBeforeVesting(
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setOfferedCurrency(
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
@@ -671,6 +730,11 @@ export interface DWVault extends BaseContract {
     ): Promise<[boolean]>;
 
     tgePercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalPurchased(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     totalRaiseAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -729,7 +793,10 @@ export interface DWVault extends BaseContract {
 
   admin(overrides?: CallOverrides): Promise<string>;
 
-  availableToStakeThroughVault(overrides?: CallOverrides): Promise<boolean>;
+  availableToStakeThroughVault(
+    _user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   buyTokenWithToken(
     _offerToken: PromiseOrValue<string>,
@@ -751,6 +818,12 @@ export interface DWVault extends BaseContract {
     role: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getSoldTokenFromOfferedCurrency(
+    _token: PromiseOrValue<string>,
+    _amount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   grantRole(
     role: PromiseOrValue<BytesLike>,
@@ -823,6 +896,16 @@ export interface DWVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setCloseTime(
+    _closeTime: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setLockBeforeVesting(
+    _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setOfferedCurrency(
     _currency: PromiseOrValue<string>,
     _rate: PromiseOrValue<BigNumberish>,
@@ -855,6 +938,11 @@ export interface DWVault extends BaseContract {
   ): Promise<boolean>;
 
   tgePercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
+  totalPurchased(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   totalRaiseAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -913,7 +1001,10 @@ export interface DWVault extends BaseContract {
 
     admin(overrides?: CallOverrides): Promise<string>;
 
-    availableToStakeThroughVault(overrides?: CallOverrides): Promise<boolean>;
+    availableToStakeThroughVault(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -935,6 +1026,12 @@ export interface DWVault extends BaseContract {
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getSoldTokenFromOfferedCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     grantRole(
       role: PromiseOrValue<BytesLike>,
@@ -1005,6 +1102,16 @@ export interface DWVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setCloseTime(
+      _closeTime: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setLockBeforeVesting(
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setOfferedCurrency(
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
@@ -1037,6 +1144,11 @@ export interface DWVault extends BaseContract {
     ): Promise<boolean>;
 
     tgePercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalPurchased(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     totalRaiseAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1175,7 +1287,10 @@ export interface DWVault extends BaseContract {
 
     admin(overrides?: CallOverrides): Promise<BigNumber>;
 
-    availableToStakeThroughVault(overrides?: CallOverrides): Promise<BigNumber>;
+    availableToStakeThroughVault(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     buyTokenWithToken(
       _offerToken: PromiseOrValue<string>,
@@ -1195,6 +1310,12 @@ export interface DWVault extends BaseContract {
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSoldTokenFromOfferedCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1263,6 +1384,16 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setCloseTime(
+      _closeTime: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setLockBeforeVesting(
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setOfferedCurrency(
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
@@ -1295,6 +1426,11 @@ export interface DWVault extends BaseContract {
     ): Promise<BigNumber>;
 
     tgePercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalPurchased(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     totalRaiseAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1335,6 +1471,7 @@ export interface DWVault extends BaseContract {
     admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     availableToStakeThroughVault(
+      _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1356,6 +1493,12 @@ export interface DWVault extends BaseContract {
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSoldTokenFromOfferedCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1424,6 +1567,16 @@ export interface DWVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setCloseTime(
+      _closeTime: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setLockBeforeVesting(
+      _lockBeforeVesting: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setOfferedCurrency(
       _currency: PromiseOrValue<string>,
       _rate: PromiseOrValue<BigNumberish>,
@@ -1456,6 +1609,11 @@ export interface DWVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     tgePercentage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalPurchased(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     totalRaiseAmount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

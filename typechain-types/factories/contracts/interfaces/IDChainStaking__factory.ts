@@ -57,6 +57,43 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_stakeToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_stakingAmount",
+        type: "uint256",
+      },
+    ],
+    name: "getAmountUSDByToken",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "rewardToken",
+    outputs: [
+      {
+        internalType: "contract IERC20WithBurn",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
 
 export class IDChainStaking__factory {

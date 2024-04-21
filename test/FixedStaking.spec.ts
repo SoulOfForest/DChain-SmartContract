@@ -1,10 +1,15 @@
+import { addresses } from './../configs/addresses';
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
-import { Contract } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { expandTo18Decimals, expandTo18DecimalsRaw } from "../utils/bignumber";
-import { encodePrice } from "../utils/oracle";
+import { decodePrice, encodePrice } from "../utils/oracle";
+import { parseUnits } from "ethers/lib/utils";
+
+const PANCAKE_FACTORY = "0x1097053Fd2ea711dad45caCcc45EfF7548fCB362";
+const PANCAKE_ROUTER = "0xEfF92A263d31888d860bD50809A8D171709b7b1c";
 
 const MONTH_IN_SECONDS = 30 * 24 * 60 * 60;
 
@@ -19,6 +24,14 @@ const sellDuration = MONTH_IN_SECONDS;
 describe('Staking', async () => {
     async function deployFixedStakingProtocol() {
         const [owner, user0, user1, user2, user3, user4, user5, user6, treasury, fundReceiver] = await ethers.getSigners();
+
+        const USDT = await ethers.getContractFactory('TetherToken');
+        const usdt = await USDT.deploy(
+            parseUnits("1000000000000000000000000000", 30),
+            'Tether USD',
+            'USDT',
+            6
+        );
 
         const USDC = await ethers.getContractFactory('FiatTokenV2');
         const usdc = await upgrades.deployProxy(USDC, [
@@ -38,6 +51,16 @@ describe('Staking', async () => {
             expandTo18Decimals(1000000000000, 18),
         );
 
+        await usdt.issue(parseUnits("1000000000000000000000000000", 30));
+
+        await usdt.transfer(user0.address, expandTo18Decimals(3000000, 6));
+        await usdt.transfer(user1.address, expandTo18Decimals(3000000, 6));
+        await usdt.transfer(user2.address, expandTo18Decimals(3000000, 6));
+        await usdt.transfer(user3.address, expandTo18Decimals(3000000, 6));
+        await usdt.transfer(user4.address, expandTo18Decimals(3000000, 6));
+        await usdt.transfer(user5.address, expandTo18Decimals(3000000, 6));
+        await usdt.transfer(user6.address, expandTo18Decimals(3000000000, 6));
+
         await usdc.mint(owner.address, expandTo18Decimals(3000000, 6));
         await usdc.mint(user0.address, expandTo18Decimals(3000000, 6));
         await usdc.mint(user1.address, expandTo18Decimals(3000000, 6));
@@ -50,16 +73,21 @@ describe('Staking', async () => {
         // const DWToken = await ethers.getContractFactory('DWToken');
         // const token = await DWToken.deploy();
 
-        const DWToken = await ethers.getContractFactory('DWToken');
+        const DWToken = await ethers.getContractFactory('DGWToken');
         const token = await upgrades.deployProxy(DWToken, [
             "DWToken",
             "DWT",
-            expandTo18Decimals(100000000000, 25)
+            "0x2621816bE08E4279Cf881bc640bE4089BfAf491a", // UNCX
+            owner.address,
+            owner.address,
+            owner.address,
+            owner.address,
+            owner.address
         ], {
             unsafeAllow: ["constructor"],
         });
 
-        const DDXToken = await ethers.getContractFactory('DDXToken');
+        const DDXToken = await ethers.getContractFactory('DGEToken');
         const ddxToken = await upgrades.deployProxy(DDXToken, [
             "DDXToken",
             "DDX",
@@ -84,7 +112,45 @@ describe('Staking', async () => {
         );
 
 
-        const DWStaking = await ethers.getContractFactory("DWStaking");
+        // ========== Create pair for DToken =============
+
+        await usdt.approve(PANCAKE_ROUTER, ethers.constants.MaxUint256);
+        await token.approve(PANCAKE_ROUTER, ethers.constants.MaxUint256);
+
+        await token.mint(owner.address, expandTo18Decimals(400000, 18));
+
+        const pancakeFactory = await ethers.getContractAt("IPancakeFactory", PANCAKE_FACTORY);
+        const pancakeRouter = await ethers.getContractAt("IPancakeRouter02", PANCAKE_ROUTER);
+
+        // 1 token = 50 USDT
+        await pancakeRouter.addLiquidity(
+            token.address,
+            usdt.address,
+            expandTo18Decimals(200000, 18), // 200.000 token
+            expandTo18Decimals(10000000, 6), // 10.000.000 USDT
+            0,
+            0,
+            owner.address,
+            Math.floor(Date.now() / 1000 + 3600)
+        );
+
+        const pairAddress = await pancakeFactory.getPair(usdt.address, token.address);
+        const pancakePair = await ethers.getContractAt("IPancakePair", pairAddress);
+
+        const DWOracle = await ethers.getContractFactory("DWOracle");
+        const dwOracle = await DWOracle.deploy(PANCAKE_FACTORY, token.address, usdt.address);
+
+        await time.increase(12 * 60); // 12 minutes -> to make sure the price of oracle has been updated
+
+        await dwOracle.update();
+
+        // const unDecodedPrice0Average = await dwOracle.price0Average();
+        // const unDecodedPrice1Average = await dwOracle.price1Average();
+
+        // const price0Average = decodePrice(unDecodedPrice0Average.toString());
+        // const price1Average = decodePrice(unDecodedPrice1Average.toString());
+
+        const DWStaking = await ethers.getContractFactory("DGWStaking");
         const dwStaking = await upgrades.deployProxy(DWStaking, [
             owner.address,
             treasury.address,
@@ -92,7 +158,7 @@ describe('Staking', async () => {
             ddxToken.address
         ]);
 
-        const DDXStaking = await ethers.getContractFactory("DDXStaking");
+        const DDXStaking = await ethers.getContractFactory("DGEStaking");
         const ddxStaking = await upgrades.deployProxy(DDXStaking, [
             owner.address,
             ethers.constants.AddressZero, // not initialize oracle not yet
@@ -101,7 +167,7 @@ describe('Staking', async () => {
             dwStaking.address
         ]);
 
-        const DWVault = await ethers.getContractFactory("DWVault");
+        const DWVault = await ethers.getContractFactory("DGWVault");
         const dwVault = await upgrades.deployProxy(DWVault, [
             owner.address,
             token.address,
@@ -116,7 +182,7 @@ describe('Staking', async () => {
         ]);
 
 
-        const DDXVault = await ethers.getContractFactory("DDXVault");
+        const DDXVault = await ethers.getContractFactory("DGEVault");
         const ddxVault = await upgrades.deployProxy(DDXVault, [
             owner.address,
             ddxToken.address,
@@ -133,17 +199,18 @@ describe('Staking', async () => {
         await ddxStaking.setDDXVault(ddxVault.address);
 
         await dwStaking.setOfferedCurrency(token.address, "20000000000000", 0); // 1 Token = 0.05 USDC
-        await ddxStaking.setOfferedCurrency(token.address, "125000000000000", 0); // 1 Token = 0.008 USDC
+        await ddxStaking.setOfferedCurrency(ddxToken.address, "125000000000000", 0); // 1 Token = 0.008 USDC
+
+        await ddxStaking.addPool(expandTo18Decimals(100, 6), 300, 12 * MONTH_IN_SECONDS);
 
         await token.mint(treasury.address, expandTo18Decimals(1000000));
 
         await token.connect(treasury).approve(dwStaking.address, expandTo18Decimals(1000000000));
 
-
-        return { dwVault, ddxVault, oracle, usdc, dwStaking, token, user0, user1, user2, user3, user4, user5, user6, fundReceiver, treasury };
+        return { pancakePair, owner, dwOracle, pancakeRouter, dwVault, ddxStaking, ddxVault, ddxToken, oracle, usdc, usdt, dwStaking, token, user0, user1, user2, user3, user4, user5, user6, fundReceiver, treasury };
     };
 
-    xdescribe('ICO', async () => {
+    describe('ICO', async () => {
         xdescribe("buy/sell", async () => {
             it("User not able to buy ICO token if rate not set yet`", async () => {
                 const { ddxVault, dwVault, usdc, token, user1, user2 } = await loadFixture(deployFixedStakingProtocol);
@@ -236,9 +303,9 @@ describe('Staking', async () => {
             })
         })
 
-        xdescribe("claim", async () => {
+        describe("claim", async () => {
             async function deployPreSetupForClaim() {
-                const { dwStaking, ddxVault, dwVault, token, usdc, oracle, treasury, user1, user2, user3, user4, user5, user0, fundReceiver } = await loadFixture(deployFixedStakingProtocol);
+                const { dwStaking, ddxVault, dwVault, token, usdc, oracle, treasury, user1, user2, user3, user4, user5, user0, fundReceiver, pancakePair } = await loadFixture(deployFixedStakingProtocol);
 
                 await time.increaseTo(openTime);
 
@@ -275,7 +342,7 @@ describe('Staking', async () => {
                 const fundReceiverBalance = await usdc.balanceOf(fundReceiver.address);
                 expect(fundReceiverBalance).to.be.equals(expandTo18Decimals(100 + 200 + 300 + 600 + 450 + 400, 6));
 
-                return { dwVault, ddxVault, oracle, usdc, dwStaking, token, user0, user1, user2, user3, user4, user5, fundReceiver };
+                return { pancakePair, dwVault, ddxVault, oracle, usdc, dwStaking, token, user0, user1, user2, user3, user4, user5, fundReceiver };
             };
 
             it("User not able to claim if sale is not ended yet", async () => {
@@ -308,6 +375,20 @@ describe('Staking', async () => {
                     user0.address,
                     expandTo18Decimals(1250)
                 );
+            })
+
+            it("User not able to claim second times after sale is ended", async () => {
+                const { dwVault, user0, user1, user2, user3, user4, user5, fundReceiver } = await loadFixture(deployPreSetupForClaim);
+
+                await time.increaseTo(openTime + sellDuration);
+
+                await expect(dwVault.connect(user0).claim(user0.address)).to.be.emit(dwVault, "PendingSoldTokenClaimed").withArgs(
+                    user0.address,
+                    user0.address,
+                    expandTo18Decimals(1250)
+                );
+
+                await expect(dwVault.connect(user0).claim(user0.address)).to.be.revertedWith("pool: pending claim amount must be positive");
             })
 
             it("User able to claim TGE after sale is ended", async () => {
@@ -400,8 +481,12 @@ describe('Staking', async () => {
                 return { dwVault, ddxVault, oracle, usdc, dwStaking, token, user0, user1, user2, user3, user4, user5, fundReceiver };
             };
 
-            it("User not able to claim if stills in cliff time", async () => {
+            it.only("User not able to claim if stills in cliff time", async () => {
                 const { dwVault, token, user0, user1, user2, user3, user4, user5 } = await loadFixture(deployPreSetupForVesting);
+                console.log(await time.latest(), await dwVault.vestingSchedules(user1.address));
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(0);
+
+                await time.increaseTo(openTime + sellDuration + 2 * MONTH_IN_SECONDS);
                 expect(await dwVault.releasableAmount(user1.address)).to.be.equals(0);
             })
 
@@ -410,23 +495,23 @@ describe('Staking', async () => {
                 await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS);
 
                 // It should be 100 because TGE already has been paid
-                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(100));
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(200));
 
                 const balanceBefore = await token.balanceOf(user1.address);
 
                 await expect(dwVault.connect(user1).release()).to.be.emit(dwVault, "TokenReleased").withArgs(
                     user1.address,
-                    expandTo18Decimals(100)
+                    expandTo18Decimals(200)
                 );
 
                 const balanceAfter = await token.balanceOf(user1.address);
-                expect(balanceAfter).to.be.equals(balanceBefore.add(expandTo18Decimals(100)))
+                expect(balanceAfter).to.be.equals(balanceBefore.add(expandTo18Decimals(200)))
 
                 await time.increaseTo(openTime + sellDuration + lockBeforeVesting + 2 * MONTH_IN_SECONDS);
 
                 await expect(dwVault.connect(user1).release()).to.be.emit(dwVault, "TokenReleased").withArgs(
                     user1.address,
-                    expandTo18Decimals(100)
+                    expandTo18Decimals(200)
                 );
             })
         });
@@ -434,7 +519,7 @@ describe('Staking', async () => {
 
     describe('Staking', async () => {
         async function deployPreSetupForStaking() {
-            const { dwStaking, ddxVault, dwVault, token, usdc, oracle, treasury, user1, user2, user3, user4, user5, user0, user6, fundReceiver } = await loadFixture(deployFixedStakingProtocol);
+            const { pancakePair, dwOracle, pancakeRouter, dwStaking, ddxStaking, ddxVault, dwVault, ddxToken, token, usdc, usdt, oracle, treasury, user1, user2, user3, user4, user5, user0, user6, fundReceiver, owner } = await loadFixture(deployFixedStakingProtocol);
 
             await time.increaseTo(openTime);
 
@@ -476,8 +561,6 @@ describe('Staking', async () => {
 
             await time.increaseTo(openTime + sellDuration);
 
-            console.log("openTime + DURATION: ", openTime + sellDuration);
-
             await dwVault.connect(user0).claim(user0.address); // 1
             await dwVault.connect(user1).claim(user1.address); // 2
             await dwVault.connect(user2).claim(user2.address); // 3
@@ -504,7 +587,7 @@ describe('Staking', async () => {
             //     expandTo18Decimals(300)
             // );
 
-            return { dwVault, ddxVault, oracle, usdc, dwStaking, token, user0, user1, user2, user3, user4, user5, user6, fundReceiver };
+            return { owner, pancakePair, dwOracle, pancakeRouter, ddxToken, dwVault, ddxVault, ddxStaking, oracle, usdc, usdt, dwStaking, token, user0, user1, user2, user3, user4, user5, user6, fundReceiver };
         };
 
         it("✅ User able to deposit successfully using pending vesting token", async () => {
@@ -523,7 +606,8 @@ describe('Staking', async () => {
                 token.address,
                 ethers.constants.AddressZero,
                 expandTo18Decimals(2000),
-                expandTo18Decimals(100, 6)
+                expandTo18Decimals(100, 6),
+                anyValue
             );
 
             const stakingContract = await dwStaking.stakingContracts(0);
@@ -542,13 +626,90 @@ describe('Staking', async () => {
                 token.address,
                 ethers.constants.AddressZero,
                 expandTo18Decimals(2500),
-                expandTo18Decimals(125, 6)
+                expandTo18Decimals(125, 6),
+                anyValue
             );
 
             const stakingContractOfUser2 = await dwStaking.stakingContracts(1);
 
             expect(stakingContractOfUser2.totalStakesInUSD).to.be.equals(expandTo18Decimals(125, 6));
             expect(stakingContractOfUser2.totalExpectedInterest).to.be.equals(expandTo18Decimals(250, 6));
+        })
+
+        it("✅ User will receive DDX as extra reward when deposit successfully", async () => {
+            const { ddxToken, ddxVault, dwStaking, token, user1, user2, user3, dwVault } = await loadFixture(deployPreSetupForStaking);
+
+            await token.connect(user1).approve(dwVault.address, expandTo18Decimals(100000000));
+            await token.connect(user2).approve(dwVault.address, expandTo18Decimals(100000000));
+
+            await expect(dwVault.connect(user1).stakeWithVault(
+                0,
+                expandTo18Decimals(2000),
+                ethers.constants.AddressZero
+            )).to.be.emit(dwStaking, "ContractCreated").withArgs(
+                0,
+                user1.address,
+                token.address,
+                ethers.constants.AddressZero,
+                expandTo18Decimals(2000),
+                expandTo18Decimals(100, 6),
+                anyValue
+            );
+
+            // User 2 choose stake with 2500 tokens
+            await expect(dwVault.connect(user2).stakeWithVault(
+                0,
+                expandTo18Decimals(2500),
+                ethers.constants.AddressZero
+            )).to.be.emit(dwStaking, "ContractCreated").withArgs(
+                1,
+                user2.address,
+                token.address,
+                ethers.constants.AddressZero,
+                expandTo18Decimals(2500),
+                expandTo18Decimals(125, 6),
+                anyValue
+            );
+
+            const user2DDXVestingSchedule = await ddxVault.getVestingScheduleByAddressAndIndex(user2.address, 0);
+            expect(user2DDXVestingSchedule.amountTotal).to.be.equals(expandTo18Decimals(15625, 18));
+            expect(user2DDXVestingSchedule.start).to.be.equals(ddxStartVestingTime);
+        })
+
+        it("✅ User will receive DDX as compounded extra reward when deposit successfully", async () => {
+            const { ddxVault, dwStaking, token, user1, user2, user3, user6, dwVault } = await loadFixture(deployPreSetupForStaking);
+
+            await token.connect(user6).approve(dwVault.address, expandTo18Decimals(100000000));
+
+            await expect(dwVault.connect(user6).stakeWithVault(
+                expandTo18Decimals(1000),
+                expandTo18Decimals(2000),
+                ethers.constants.AddressZero
+            )).to.be.emit(dwStaking, "ContractCreated").withArgs(
+                0,
+                user6.address,
+                token.address,
+                ethers.constants.AddressZero,
+                expandTo18Decimals(3000),
+                expandTo18Decimals(150, 6)
+            );
+
+            await expect(dwVault.connect(user6).stakeWithVault(
+                expandTo18Decimals(0),
+                expandTo18Decimals(4000),
+                ethers.constants.AddressZero
+            )).to.be.emit(dwStaking, "ContractCreated").withArgs(
+                1,
+                user6.address,
+                token.address,
+                ethers.constants.AddressZero,
+                expandTo18Decimals(4000),
+                expandTo18Decimals(200, 6)
+            );
+
+            const user6DDXVestingSchedule = await ddxVault.getVestingScheduleByAddressAndIndex(user6.address, 0);
+            expect(user6DDXVestingSchedule.amountTotal).to.be.equals(expandTo18Decimals(43750, 18));
+            expect(user6DDXVestingSchedule.start).to.be.equals(ddxStartVestingTime);
         })
 
         it("✅ User vesting details needs to be updated correspondingly after staking", async () => {
@@ -881,29 +1042,38 @@ describe('Staking', async () => {
             expect(totalReferralInvitations).to.be.equals(1);
         })
 
-        xit("✅ User able to deposit successfully with token in the allowed list", async () => {
-            const { dwStaking, usdc, token, user1, user2 } = await loadFixture(deployFixedStakingProtocol);
+        it("✅ User able to deposit successfully with token in the allowed list", async () => {
+            const { dwStaking, ddxToken, ddxVault, usdc, usdt, token, user1, user2 } = await loadFixture(deployFixedStakingProtocol);
 
             await token.connect(user1).approve(dwStaking.address, expandTo18Decimals(2000));
             await token.connect(user2).approve(dwStaking.address, expandTo18Decimals(3000));
+            await ddxToken.connect(user1).approve(ddxVault.address, expandTo18Decimals(3000));
 
+            await dwStaking.setAllowedStakeToken(usdt.address);
             await dwStaking.setAllowedStakeToken(usdc.address);
             await dwStaking.setOfferedCurrency(usdc.address, 1, 0);
+            await dwStaking.setOfferedCurrency(usdt.address, 1, 0);
 
             await usdc.connect(user1).approve(dwStaking.address, expandTo18Decimals(2000, 6));
+            await usdt.connect(user1).approve(dwStaking.address, expandTo18Decimals(2000, 6));
 
             await expect(
-                dwStaking.connect(user1).deposit(expandTo18Decimals(2000, 6), usdc.address, ethers.constants.AddressZero)
-            ).to.be.emit(dwStaking, "Deposited").withArgs(
+                dwStaking.connect(user1).deposit(expandTo18Decimals(2000, 6), usdt.address, user2.address)
+            ).to.be.emit(dwStaking, "ContractCreated").withArgs(
+                0,
                 user1.address,
-                usdc.address,
-                ethers.constants.AddressZero,
+                usdt.address,
+                user2.address,
                 expandTo18Decimals(2000, 6),
-                expandTo18Decimals(2000, 6)
+                expandTo18Decimals(2000, 6),
+                expandTo18Decimals(2000, 6),
+                anyValue
             );
 
-            const stakingInfo = await dwStaking.stakingContracts(user1.address);
+            const stakingInfo = await dwStaking.stakingContracts(0);
             expect(stakingInfo.totalStakesInUSD).to.be.equals(expandTo18Decimals(2000, 6));
+
+            await ddxVault.connect(user1).stakeWithVault(0, 0, expandTo18Decimals(12500, 18));
         })
 
         xit("❌ User not able to deposit using referrer twice", async () => {
@@ -1013,49 +1183,72 @@ describe('Staking', async () => {
         })
 
 
-        xit("✅ Reward amount can be fluctuated by its price (go Up or Down)", async () => {
-            const { dwStaking, oracle, token, user1, user2 } = await loadFixture(deployFixedStakingProtocol);
+        it("✅ Reward amount can be fluctuated by its price (go Up or Down)", async () => {
+            const { pancakePair, dwOracle, usdt, pancakeRouter, dwStaking, oracle, token, user1, user2, owner } = await loadFixture(deployPreSetupForStaking);
 
-            await dwStaking.setAssetOracle(token.address, oracle.address);
+            await dwStaking.setAssetOracle(token.address, dwOracle.address);
 
             await token.connect(user1).approve(dwStaking.address, expandTo18Decimals(5000));
             await token.connect(user2).approve(dwStaking.address, expandTo18Decimals(5000));
 
+            // console.log("balance: ", await token.balanceOf(user1.address));
+
+            await dwStaking.connect(user1).deposit(expandTo18Decimals(500), token.address, user2.address)
+
+            await time.increase(60 * 60); // Increase 1 hour
+
+            // Manual conversion rate: 1 Token = 0.05 USDC, but inside oracle is 1 token = 50 USDC
+            // => so oracle will take the priority
+            const stakingInfo = await dwStaking.stakingContracts(0);
+
+            let dwPrice = await dwOracle.price0Average();
+
+            expect(stakingInfo.totalStakesInUSD).to.be.equals(expandTo18Decimals(24999999999, 0)); // 25000 USD
+            expect(stakingInfo.totalExpectedInterest).to.be.equals(expandTo18Decimals(49999999998, 0)); // 50000 USD
+
+            await expect(dwStaking.connect(user1).claimReward(0)).to.be.emit(dwStaking, "RewardHarvested").withArgs(
+                0,
+                user1.address,
+                expandTo18DecimalsRaw(3473186, 0).mul(dwPrice.toString()).div(BigNumber.from(2).pow(112)).toString(),
+                expandTo18DecimalsRaw(3473186, 0)
+            );
+
+            await time.increase(60 * 60); // Increase 1 hour
+
             await expect(
-                dwStaking.connect(user1).deposit(expandTo18Decimals(2000), token.address, user2.address)
-            ).to.be.emit(dwStaking, "Deposited").withArgs(
-                user1.address,
-                token.address,
-                user2.address,
-                expandTo18Decimals(2000),
-                expandTo18Decimals(100, 6)
-            );
+                pancakeRouter.swapExactTokensForTokens(
+                    expandTo18Decimals(10000, 18),
+                    0,
+                    [token.address, usdt.address],
+                    owner.address,
+                    (await time.latest() + 3600)
+                )
+            ).to.be.emit(pancakePair, "Swap").withArgs(
+                pancakeRouter.address,
+                0,
+                expandTo18Decimals(10000, 18),
+                475056554351,
+                0,
+                owner.address
+            )
 
-            await time.increase(60 * 60); // Increase 1 hour
+            await time.increase(10 * 60); // Increase 10 minutes 
+            await dwOracle.update();
 
-            await expect(dwStaking.connect(user1).claimReward()).to.be.emit(dwStaking, "RewardHarvested").withArgs(
-                user1.address,
-                expandTo18DecimalsRaw(1111419, 0).mul(100).div(5).mul(expandTo18Decimals(10, 18)).div(expandTo18Decimals(10, 6)),
-                expandTo18DecimalsRaw(1111419, 0)
-            );
+            // console.log("price: ", await dwOracle.price0Average(), await dwOracle.price1Average());
 
-            await time.increase(60 * 60); // Increase 1 hour
-            // 1 DX = 0.2 USDC 
-            const token0Amount = expandTo18Decimals(10000, 18); // 18 decimals
-            const token1Amount = expandTo18Decimals(2000, 6) // 6 decimals
+            // await expect(dwStaking.connect(user1).claimReward(0)).to.be.emit(dwStaking, "RewardHarvested").withArgs(
+            //     0,
+            //     user1.address,
+            //     expandTo18DecimalsRaw(3473186, 0).mul(dwPrice.toString()).div(BigNumber.from(2).pow(112)).toString(),
+            //     expandTo18DecimalsRaw(3473186, 0)
+            // );
 
-            const expectedPrices = encodePrice(token0Amount, token1Amount);
-
-            await oracle.updatePrice(
-                expectedPrices[0].toFixed(),
-                expectedPrices[1].toFixed()
-            );
-
-            await expect(dwStaking.connect(user1).claimReward()).to.be.emit(dwStaking, "RewardHarvested").withArgs(
-                user1.address,
-                expandTo18DecimalsRaw(1111728, 0).mul(10).div(2).mul(expandTo18Decimals(10, 18)).div(expandTo18Decimals(10, 6)),
-                expandTo18DecimalsRaw(1111728, 0)
-            );
+            // await expect(dwStaking.connect(user1).claimReward()).to.be.emit(dwStaking, "RewardHarvested").withArgs(
+            //     user1.address,
+            //     expandTo18DecimalsRaw(1111728, 0).mul(10).div(2).mul(expandTo18Decimals(10, 18)).div(expandTo18Decimals(10, 6)),
+            //     expandTo18DecimalsRaw(1111728, 0)
+            // );
         })
 
         xit("❌ User interest cannot surpass 200%", async () => {

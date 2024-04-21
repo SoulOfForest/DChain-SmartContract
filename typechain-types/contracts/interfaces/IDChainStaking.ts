@@ -27,10 +27,16 @@ export interface IDChainStakingInterface extends utils.Interface {
   functions: {
     "depositByVault(uint256,uint256,address,address)": FunctionFragment;
     "getAmountDWByUSD(uint256)": FunctionFragment;
+    "getAmountUSDByToken(address,uint256)": FunctionFragment;
+    "rewardToken()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "depositByVault" | "getAmountDWByUSD"
+    nameOrSignatureOrTopic:
+      | "depositByVault"
+      | "getAmountDWByUSD"
+      | "getAmountUSDByToken"
+      | "rewardToken"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -46,6 +52,14 @@ export interface IDChainStakingInterface extends utils.Interface {
     functionFragment: "getAmountDWByUSD",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getAmountUSDByToken",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rewardToken",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "depositByVault",
@@ -53,6 +67,14 @@ export interface IDChainStakingInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAmountDWByUSD",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountUSDByToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "rewardToken",
     data: BytesLike
   ): Result;
 
@@ -98,6 +120,14 @@ export interface IDChainStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    getAmountUSDByToken(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    rewardToken(overrides?: CallOverrides): Promise<[string]>;
   };
 
   depositByVault(
@@ -113,6 +143,14 @@ export interface IDChainStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getAmountUSDByToken(
+    _stakeToken: PromiseOrValue<string>,
+    _stakingAmount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  rewardToken(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     depositByVault(
       _originAmount: PromiseOrValue<BigNumberish>,
@@ -126,6 +164,14 @@ export interface IDChainStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getAmountUSDByToken(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    rewardToken(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -143,6 +189,14 @@ export interface IDChainStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    getAmountUSDByToken(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    rewardToken(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -158,5 +212,13 @@ export interface IDChainStaking extends BaseContract {
       _amountInUSD: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    getAmountUSDByToken(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

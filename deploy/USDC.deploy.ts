@@ -30,6 +30,6 @@ const deployUSDC: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 };
 
 deployUSDC.tags = ['USDC'];
-// deployUSDC.skip = () => Promise.resolve(true);
+deployUSDC.skip = () => Promise.resolve(true);
 
 export default deployUSDC;

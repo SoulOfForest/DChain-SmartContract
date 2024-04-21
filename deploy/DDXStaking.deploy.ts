@@ -6,20 +6,22 @@ import { expandTo18Decimals } from '../utils/bignumber';
 const deployDDXStaking: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts } = hre;
     const { deploy } = deployments;
-    const { deployer, treasury, owner } = await getNamedAccounts();
+    const { deployer, farming, owner } = await getNamedAccounts();
 
-    const ddxTokenAddress = (
-        await deployments.get('DDXToken_Proxy')
+    const ddxTokenAddress = process.env.DDX_ADDRESS;
+
+    const dwStakingAddress = (
+        await deployments.get('DGWStaking_Proxy')
     ).address;
 
-
-    const { address: dwStakingAddress } = await deploy('DDXStaking', {
+    const { address: ddxStakingAddress } = await deploy('DGEStaking', {
         from: deployer,
         args: [
             owner,
             ethers.constants.AddressZero,
-            treasury,
-            ddxTokenAddress
+            farming,
+            ddxTokenAddress,
+            dwStakingAddress
         ],
         log: true,
         deterministicDeployment: false,
@@ -32,6 +34,6 @@ const deployDDXStaking: DeployFunction = async (hre: HardhatRuntimeEnvironment) 
 };
 
 deployDDXStaking.tags = ['DDX_STAKING'];
-deployDDXStaking.dependencies = ['DDX_TOKEN'];
+deployDDXStaking.dependencies = ['DW_STAKING'];
 
 export default deployDDXStaking;
