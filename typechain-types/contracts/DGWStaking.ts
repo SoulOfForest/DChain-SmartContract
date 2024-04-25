@@ -83,6 +83,7 @@ export interface DGWStakingInterface extends utils.Interface {
     "claimReward(uint256)": FunctionFragment;
     "commissionInterestLevels(uint256)": FunctionFragment;
     "couldBecomeReferrer(address)": FunctionFragment;
+    "ddxRewardDistributionCount(address)": FunctionFragment;
     "deposit(uint256,address,address)": FunctionFragment;
     "depositByVault(uint256,uint256,address,address)": FunctionFragment;
     "directBonus(address)": FunctionFragment;
@@ -104,6 +105,7 @@ export interface DGWStakingInterface extends utils.Interface {
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,address,address,address,address)": FunctionFragment;
     "isAdmin()": FunctionFragment;
+    "maximumDDXRewardDistributionCount()": FunctionFragment;
     "maximumEarningsInPercent()": FunctionFragment;
     "minimumStakingAmountInUSD()": FunctionFragment;
     "offeredCurrencies(address)": FunctionFragment;
@@ -124,6 +126,7 @@ export interface DGWStakingInterface extends utils.Interface {
     "setDWVault(address)": FunctionFragment;
     "setDirectInterest(uint256)": FunctionFragment;
     "setFundReceiver(address)": FunctionFragment;
+    "setMaximumDDXRewardDistribution(uint256)": FunctionFragment;
     "setMinimumStakingInUSD(uint256)": FunctionFragment;
     "setOfferedCurrency(address,uint256,uint256)": FunctionFragment;
     "setRoot(address)": FunctionFragment;
@@ -155,6 +158,7 @@ export interface DGWStakingInterface extends utils.Interface {
       | "claimReward"
       | "commissionInterestLevels"
       | "couldBecomeReferrer"
+      | "ddxRewardDistributionCount"
       | "deposit"
       | "depositByVault"
       | "directBonus"
@@ -176,6 +180,7 @@ export interface DGWStakingInterface extends utils.Interface {
       | "hasRole"
       | "initialize"
       | "isAdmin"
+      | "maximumDDXRewardDistributionCount"
       | "maximumEarningsInPercent"
       | "minimumStakingAmountInUSD"
       | "offeredCurrencies"
@@ -196,6 +201,7 @@ export interface DGWStakingInterface extends utils.Interface {
       | "setDWVault"
       | "setDirectInterest"
       | "setFundReceiver"
+      | "setMaximumDDXRewardDistribution"
       | "setMinimumStakingInUSD"
       | "setOfferedCurrency"
       | "setRoot"
@@ -262,6 +268,10 @@ export interface DGWStakingInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "couldBecomeReferrer",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "ddxRewardDistributionCount",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -361,6 +371,10 @@ export interface DGWStakingInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "isAdmin", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "maximumDDXRewardDistributionCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "maximumEarningsInPercent",
     values?: undefined
   ): string;
@@ -430,6 +444,10 @@ export interface DGWStakingInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setFundReceiver",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaximumDDXRewardDistribution",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "setMinimumStakingInUSD",
@@ -523,6 +541,10 @@ export interface DGWStakingInterface extends utils.Interface {
     functionFragment: "couldBecomeReferrer",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "ddxRewardDistributionCount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "depositByVault",
@@ -593,6 +615,10 @@ export interface DGWStakingInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "maximumDDXRewardDistributionCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "maximumEarningsInPercent",
     data: BytesLike
   ): Result;
@@ -655,6 +681,10 @@ export interface DGWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setMaximumDDXRewardDistribution",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setMinimumStakingInUSD",
     data: BytesLike
   ): Result;
@@ -694,6 +724,7 @@ export interface DGWStakingInterface extends utils.Interface {
   events: {
     "ComissionDirectBonus(address,address,uint256,uint256)": EventFragment;
     "ContractCreated(uint256,address,address,address,uint256,uint256,uint256,uint64)": EventFragment;
+    "DDXRewarded(address,uint256,uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "Paused(address)": EventFragment;
     "RewardHarvested(uint256,address,uint256,uint256)": EventFragment;
@@ -707,6 +738,7 @@ export interface DGWStakingInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "ComissionDirectBonus"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ContractCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DDXRewarded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RewardHarvested"): EventFragment;
@@ -757,6 +789,18 @@ export type ContractCreatedEvent = TypedEvent<
 >;
 
 export type ContractCreatedEventFilter = TypedEventFilter<ContractCreatedEvent>;
+
+export interface DDXRewardedEventObject {
+  user: string;
+  amount: BigNumber;
+  amountInUSD: BigNumber;
+}
+export type DDXRewardedEvent = TypedEvent<
+  [string, BigNumber, BigNumber],
+  DDXRewardedEventObject
+>;
+
+export type DDXRewardedEventFilter = TypedEventFilter<DDXRewardedEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -932,6 +976,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    ddxRewardDistributionCount(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       stakeToken: PromiseOrValue<string>,
@@ -1037,6 +1086,10 @@ export interface DGWStaking extends BaseContract {
 
     isAdmin(overrides?: CallOverrides): Promise<[boolean]>;
 
+    maximumDDXRewardDistributionCount(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     maximumEarningsInPercent(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -1123,6 +1176,11 @@ export interface DGWStaking extends BaseContract {
 
     setFundReceiver(
       _fundReceiver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setMaximumDDXRewardDistribution(
+      _maximumDDXRewardDistributionCount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1251,6 +1309,11 @@ export interface DGWStaking extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  ddxRewardDistributionCount(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   deposit(
     amount: PromiseOrValue<BigNumberish>,
     stakeToken: PromiseOrValue<string>,
@@ -1356,6 +1419,10 @@ export interface DGWStaking extends BaseContract {
 
   isAdmin(overrides?: CallOverrides): Promise<boolean>;
 
+  maximumDDXRewardDistributionCount(
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   maximumEarningsInPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
   minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1440,6 +1507,11 @@ export interface DGWStaking extends BaseContract {
 
   setFundReceiver(
     _fundReceiver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setMaximumDDXRewardDistribution(
+    _maximumDDXRewardDistributionCount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1568,6 +1640,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    ddxRewardDistributionCount(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       stakeToken: PromiseOrValue<string>,
@@ -1673,6 +1750,10 @@ export interface DGWStaking extends BaseContract {
 
     isAdmin(overrides?: CallOverrides): Promise<boolean>;
 
+    maximumDDXRewardDistributionCount(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     maximumEarningsInPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
     minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1757,6 +1838,11 @@ export interface DGWStaking extends BaseContract {
 
     setFundReceiver(
       _fundReceiver: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setMaximumDDXRewardDistribution(
+      _maximumDDXRewardDistributionCount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1866,6 +1952,17 @@ export interface DGWStaking extends BaseContract {
       interestAmountInUSD?: null,
       dueDate?: null
     ): ContractCreatedEventFilter;
+
+    "DDXRewarded(address,uint256,uint256)"(
+      user?: PromiseOrValue<string> | null,
+      amount?: null,
+      amountInUSD?: null
+    ): DDXRewardedEventFilter;
+    DDXRewarded(
+      user?: PromiseOrValue<string> | null,
+      amount?: null,
+      amountInUSD?: null
+    ): DDXRewardedEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
@@ -1997,6 +2094,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    ddxRewardDistributionCount(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       stakeToken: PromiseOrValue<string>,
@@ -2102,6 +2204,10 @@ export interface DGWStaking extends BaseContract {
 
     isAdmin(overrides?: CallOverrides): Promise<BigNumber>;
 
+    maximumDDXRewardDistributionCount(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     maximumEarningsInPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
     minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2186,6 +2292,11 @@ export interface DGWStaking extends BaseContract {
 
     setFundReceiver(
       _fundReceiver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setMaximumDDXRewardDistribution(
+      _maximumDDXRewardDistributionCount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2289,6 +2400,11 @@ export interface DGWStaking extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     couldBecomeReferrer(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    ddxRewardDistributionCount(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2400,6 +2516,10 @@ export interface DGWStaking extends BaseContract {
 
     isAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    maximumDDXRewardDistributionCount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     maximumEarningsInPercent(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2488,6 +2608,11 @@ export interface DGWStaking extends BaseContract {
 
     setFundReceiver(
       _fundReceiver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMaximumDDXRewardDistribution(
+      _maximumDDXRewardDistributionCount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
