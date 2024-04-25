@@ -28,6 +28,8 @@ export interface IOracleSimpleInterface extends utils.Interface {
     "PERIOD()": FunctionFragment;
     "consult(address,uint256)": FunctionFragment;
     "getBlockTimestampLast()": FunctionFragment;
+    "token0()": FunctionFragment;
+    "token1()": FunctionFragment;
     "update()": FunctionFragment;
   };
 
@@ -36,6 +38,8 @@ export interface IOracleSimpleInterface extends utils.Interface {
       | "PERIOD"
       | "consult"
       | "getBlockTimestampLast"
+      | "token0"
+      | "token1"
       | "update"
   ): FunctionFragment;
 
@@ -48,6 +52,8 @@ export interface IOracleSimpleInterface extends utils.Interface {
     functionFragment: "getBlockTimestampLast",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "token0", values?: undefined): string;
+  encodeFunctionData(functionFragment: "token1", values?: undefined): string;
   encodeFunctionData(functionFragment: "update", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
@@ -56,6 +62,8 @@ export interface IOracleSimpleInterface extends utils.Interface {
     functionFragment: "getBlockTimestampLast",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "token0", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "token1", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "update", data: BytesLike): Result;
 
   events: {};
@@ -98,6 +106,10 @@ export interface IOracleSimple extends BaseContract {
 
     getBlockTimestampLast(overrides?: CallOverrides): Promise<[number]>;
 
+    token0(overrides?: CallOverrides): Promise<[string]>;
+
+    token1(overrides?: CallOverrides): Promise<[string]>;
+
     update(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -112,6 +124,10 @@ export interface IOracleSimple extends BaseContract {
   ): Promise<BigNumber>;
 
   getBlockTimestampLast(overrides?: CallOverrides): Promise<number>;
+
+  token0(overrides?: CallOverrides): Promise<string>;
+
+  token1(overrides?: CallOverrides): Promise<string>;
 
   update(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -128,6 +144,10 @@ export interface IOracleSimple extends BaseContract {
 
     getBlockTimestampLast(overrides?: CallOverrides): Promise<number>;
 
+    token0(overrides?: CallOverrides): Promise<string>;
+
+    token1(overrides?: CallOverrides): Promise<string>;
+
     update(overrides?: CallOverrides): Promise<void>;
   };
 
@@ -143,6 +163,10 @@ export interface IOracleSimple extends BaseContract {
     ): Promise<BigNumber>;
 
     getBlockTimestampLast(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token0(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token1(overrides?: CallOverrides): Promise<BigNumber>;
 
     update(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -161,6 +185,10 @@ export interface IOracleSimple extends BaseContract {
     getBlockTimestampLast(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    token0(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    token1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     update(
       overrides?: Overrides & { from?: PromiseOrValue<string> }

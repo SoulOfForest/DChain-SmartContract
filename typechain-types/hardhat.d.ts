@@ -13,9 +13,29 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "AccessControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessControlUpgradeable__factory>;
+    getContractFactory(
+      name: "IAccessControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAccessControlUpgradeable__factory>;
+    getContractFactory(
+      name: "OwnableUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OwnableUpgradeable__factory>;
+    getContractFactory(
       name: "Initializable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Initializable__factory>;
+    getContractFactory(
+      name: "PausableUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PausableUpgradeable__factory>;
+    getContractFactory(
+      name: "ReentrancyGuardUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ReentrancyGuardUpgradeable__factory>;
     getContractFactory(
       name: "ERC20Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -28,6 +48,14 @@ declare module "hardhat/types/runtime" {
       name: "IERC20PermitUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20PermitUpgradeable__factory>;
+    getContractFactory(
+      name: "ERC20BurnableUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20BurnableUpgradeable__factory>;
+    getContractFactory(
+      name: "ERC20CappedUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20CappedUpgradeable__factory>;
     getContractFactory(
       name: "IERC20MetadataUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -45,29 +73,121 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.EIP712Upgradeable__factory>;
     getContractFactory(
+      name: "ERC165Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165Upgradeable__factory>;
+    getContractFactory(
+      name: "IERC165Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165Upgradeable__factory>;
+    getContractFactory(
       name: "Ownable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
+      name: "Proxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Proxy__factory>;
     getContractFactory(
       name: "Pausable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Pausable__factory>;
     getContractFactory(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20__factory>;
+    getContractFactory(
+      name: "ERC20Burnable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20Burnable__factory>;
+    getContractFactory(
+      name: "ERC20Capped",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20Capped__factory>;
+    getContractFactory(
+      name: "IERC20Metadata",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20Metadata__factory>;
+    getContractFactory(
       name: "IERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
     getContractFactory(
-      name: "DchainFixedStaking",
+      name: "DChainBase",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.DchainFixedStaking__factory>;
+    ): Promise<Contracts.DChainBase__factory>;
     getContractFactory(
-      name: "IIDOPool",
+      name: "DGEToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IIDOPool__factory>;
+    ): Promise<Contracts.DGEToken__factory>;
+    getContractFactory(
+      name: "DGEStaking",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGEStaking__factory>;
+    getContractFactory(
+      name: "DGEVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGEVault__factory>;
+    getContractFactory(
+      name: "DGWToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGWToken__factory>;
+    getContractFactory(
+      name: "DGWPayment",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGWPayment__factory>;
+    getContractFactory(
+      name: "DGWStaking",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGWStaking__factory>;
+    getContractFactory(
+      name: "DGWSwap",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGWSwap__factory>;
+    getContractFactory(
+      name: "DGWVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGWVault__factory>;
+    getContractFactory(
+      name: "IDChainStaking",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDChainStaking__factory>;
+    getContractFactory(
+      name: "IDDXStaking",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDDXStaking__factory>;
+    getContractFactory(
+      name: "IDDXVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDDXVault__factory>;
+    getContractFactory(
+      name: "IERC173",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC173__factory>;
+    getContractFactory(
+      name: "IERC20WithBurn",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20WithBurn__factory>;
+    getContractFactory(
+      name: "IKeeperCompatible",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IKeeperCompatible__factory>;
     getContractFactory(
       name: "IOracleSimple",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IOracleSimple__factory>;
+    getContractFactory(
+      name: "IRegister",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IRegister__factory>;
+    getContractFactory(
+      name: "IUncxTokenVesting",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IUncxTokenVesting__factory>;
+    getContractFactory(
+      name: "IVersioned",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IVersioned__factory>;
     getContractFactory(
       name: "IPancakeFactory",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -76,6 +196,22 @@ declare module "hardhat/types/runtime" {
       name: "IPancakePair",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPancakePair__factory>;
+    getContractFactory(
+      name: "IPancakeRouter01",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPancakeRouter01__factory>;
+    getContractFactory(
+      name: "IPancakeRouter02",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPancakeRouter02__factory>;
+    getContractFactory(
+      name: "DWOracle",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DWOracle__factory>;
+    getContractFactory(
+      name: "UpkeepLibrary",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UpkeepLibrary__factory>;
     getContractFactory(
       name: "MockERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -141,15 +277,88 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Rescuable__factory>;
     getContractFactory(
+      name: "BasicToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BasicToken__factory>;
+    getContractFactory(
+      name: "BlackList",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BlackList__factory>;
+    getContractFactory(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20__factory>;
+    getContractFactory(
+      name: "ERC20Basic",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20Basic__factory>;
+    getContractFactory(
+      name: "Ownable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
+      name: "Pausable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Pausable__factory>;
+    getContractFactory(
+      name: "StandardToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StandardToken__factory>;
+    getContractFactory(
+      name: "TetherToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TetherToken__factory>;
+    getContractFactory(
+      name: "UpgradedStandardToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UpgradedStandardToken__factory>;
+    getContractFactory(
       name: "OracleSimple",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OracleSimple__factory>;
+    getContractFactory(
+      name: "ImplementationRepository",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ImplementationRepository__factory>;
+    getContractFactory(
+      name: "UcuProxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UcuProxy__factory>;
+    getContractFactory(
+      name: "VersionedImplementationRepository",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VersionedImplementationRepository__factory>;
 
+    getContractAt(
+      name: "AccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControlUpgradeable>;
+    getContractAt(
+      name: "IAccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControlUpgradeable>;
+    getContractAt(
+      name: "OwnableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OwnableUpgradeable>;
     getContractAt(
       name: "Initializable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Initializable>;
+    getContractAt(
+      name: "PausableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PausableUpgradeable>;
+    getContractAt(
+      name: "ReentrancyGuardUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ReentrancyGuardUpgradeable>;
     getContractAt(
       name: "ERC20Upgradeable",
       address: string,
@@ -165,6 +374,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20PermitUpgradeable>;
+    getContractAt(
+      name: "ERC20BurnableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20BurnableUpgradeable>;
+    getContractAt(
+      name: "ERC20CappedUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20CappedUpgradeable>;
     getContractAt(
       name: "IERC20MetadataUpgradeable",
       address: string,
@@ -186,35 +405,150 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.EIP712Upgradeable>;
     getContractAt(
+      name: "ERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165Upgradeable>;
+    getContractAt(
+      name: "IERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165Upgradeable>;
+    getContractAt(
       name: "Ownable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "Proxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Proxy>;
     getContractAt(
       name: "Pausable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Pausable>;
     getContractAt(
+      name: "ERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20>;
+    getContractAt(
+      name: "ERC20Burnable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20Burnable>;
+    getContractAt(
+      name: "ERC20Capped",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20Capped>;
+    getContractAt(
+      name: "IERC20Metadata",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20Metadata>;
+    getContractAt(
       name: "IERC20",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20>;
     getContractAt(
-      name: "DchainFixedStaking",
+      name: "DChainBase",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.DchainFixedStaking>;
+    ): Promise<Contracts.DChainBase>;
     getContractAt(
-      name: "IIDOPool",
+      name: "DGEToken",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.IIDOPool>;
+    ): Promise<Contracts.DGEToken>;
+    getContractAt(
+      name: "DGEStaking",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGEStaking>;
+    getContractAt(
+      name: "DGEVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGEVault>;
+    getContractAt(
+      name: "DGWToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGWToken>;
+    getContractAt(
+      name: "DGWPayment",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGWPayment>;
+    getContractAt(
+      name: "DGWStaking",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGWStaking>;
+    getContractAt(
+      name: "DGWSwap",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGWSwap>;
+    getContractAt(
+      name: "DGWVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGWVault>;
+    getContractAt(
+      name: "IDChainStaking",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDChainStaking>;
+    getContractAt(
+      name: "IDDXStaking",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDDXStaking>;
+    getContractAt(
+      name: "IDDXVault",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDDXVault>;
+    getContractAt(
+      name: "IERC173",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC173>;
+    getContractAt(
+      name: "IERC20WithBurn",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20WithBurn>;
+    getContractAt(
+      name: "IKeeperCompatible",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IKeeperCompatible>;
     getContractAt(
       name: "IOracleSimple",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IOracleSimple>;
+    getContractAt(
+      name: "IRegister",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IRegister>;
+    getContractAt(
+      name: "IUncxTokenVesting",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IUncxTokenVesting>;
+    getContractAt(
+      name: "IVersioned",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IVersioned>;
     getContractAt(
       name: "IPancakeFactory",
       address: string,
@@ -225,6 +559,26 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IPancakePair>;
+    getContractAt(
+      name: "IPancakeRouter01",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPancakeRouter01>;
+    getContractAt(
+      name: "IPancakeRouter02",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPancakeRouter02>;
+    getContractAt(
+      name: "DWOracle",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DWOracle>;
+    getContractAt(
+      name: "UpkeepLibrary",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UpkeepLibrary>;
     getContractAt(
       name: "MockERC20",
       address: string,
@@ -306,10 +660,70 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Rescuable>;
     getContractAt(
+      name: "BasicToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BasicToken>;
+    getContractAt(
+      name: "BlackList",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BlackList>;
+    getContractAt(
+      name: "ERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20>;
+    getContractAt(
+      name: "ERC20Basic",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20Basic>;
+    getContractAt(
+      name: "Ownable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "Pausable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Pausable>;
+    getContractAt(
+      name: "StandardToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.StandardToken>;
+    getContractAt(
+      name: "TetherToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TetherToken>;
+    getContractAt(
+      name: "UpgradedStandardToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UpgradedStandardToken>;
+    getContractAt(
       name: "OracleSimple",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OracleSimple>;
+    getContractAt(
+      name: "ImplementationRepository",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ImplementationRepository>;
+    getContractAt(
+      name: "UcuProxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UcuProxy>;
+    getContractAt(
+      name: "VersionedImplementationRepository",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VersionedImplementationRepository>;
 
     // default types
     getContractFactory(

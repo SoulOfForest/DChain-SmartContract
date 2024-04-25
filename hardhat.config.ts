@@ -14,14 +14,6 @@ import 'hardhat-docgen';
 import 'hardhat-address-exporter';
 import 'hardhat-notifier';
 
-// {
-//   "plugins": ["prettier"],
-//     "rules": {
-//     "prettier/prettier": "error"
-//   }
-// }
-
-// import "hardhat-tracer";
 import '@nomiclabs/hardhat-solhint';
 import '@nomicfoundation/hardhat-chai-matchers';
 import '@nomicfoundation/hardhat-toolbox';
@@ -30,13 +22,24 @@ import '@openzeppelin/hardhat-upgrades';
 import '@primitivefi/hardhat-dodoc';
 
 import { removeConsoleLog } from 'hardhat-preprocessor';
+import { ethers } from 'ethers';
 
 const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY as string;
-const PROTOCOL_ADMIN_MULTISIG = process.env.PROTOCOL_ADMIN_ADDRESS || DEPLOYER_PRIVATE_KEY;
+const TREASURY_ADDRESS = process.env.TREASURY_ADDRESS || DEPLOYER_PRIVATE_KEY;
+const IDO_ADDRESS = process.env.IDO_ADDRESS
+const FARMING_ADDRESS = process.env.FARMING_ADDRESS
+const LIQUIDITY_ADDRESS = process.env.LIQUIDITY_ADDRESS
+const COMMUNITY_ADDRESS = process.env.COMMUNITY_ADDRESS
+const TEAM_ADDRESS = process.env.TEAM_ADDRESS
+const MARKETING_ADDRESS = process.env.MARKETING_ADDRESS
+const FUND_ADDRESS = process.env.FUND_ADDRESS
+const FUND_RECEIVER_IDO = process.env.FUND_RECEIVER;
+
+const OWNER_ADDRESS = process.env.OWNER_ADDRESS || DEPLOYER_PRIVATE_KEY;
 
 const accounts = [DEPLOYER_PRIVATE_KEY as string];
 
-const config: HardhatUserConfig & { sourcify: {} } = {
+const config = {
   sourcify: {
     // Disabled by default
     // Doesn't need an API key
@@ -108,14 +111,33 @@ const config: HardhatUserConfig & { sourcify: {} } = {
     notifyOnFailure: true,
   },
   etherscan: {
-    // apiKey: process.env.ARBITRUM_API_KEY || ''
+    // apiKey: process.env.ARBITRUM_API_KEY || '',
     apiKey: {
       goerli: process.env.ETHERSCAN_KEY || '',
       mainnet: process.env.ETHERSCAN_KEY || '',
       sepolia: process.env.ETHERSCAN_KEY || '',
       arbitrumGoerli: process.env.ARBITRUM_API_KEY || '',
+      arbitrumSepolia: process.env.ARBITRUM_API_KEY || '',
       arbitrum: process.env.ARBITRUM_API_KEY || '',
     } as any,
+    customChains: [
+      {
+        network: "arbitrumSepolia",
+        chainId: 421614,
+        urls: {
+          apiURL: "https://api-sepolia.arbiscan.io/api",
+          browserURL: "https://sepolia.arbiscan.io/",
+        },
+      },
+      {
+        network: "arbitrum",
+        chainId: 42161,
+        urls: {
+          apiURL: "https://api.arbiscan.io/api",
+          browserURL: "https://arbiscan.io/",
+        },
+      },
+    ]
   },
   gasReporter: {
     currency: 'USD',
@@ -198,13 +220,14 @@ const config: HardhatUserConfig & { sourcify: {} } = {
       saveDeployments: true,
       tags: ['staging'],
     },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    modeTestnet: {
+      url: "https://sepolia.mode.network",
+      chainId: 919,
       accounts,
-      chainId: 42,
+      gasPrice: 4000000000,
       live: true,
       saveDeployments: true,
-      tags: ['staging'],
+      tags: ['staging']
     },
     moonbase: {
       url: 'https://rpc.testnet.moonbeam.network',
@@ -215,17 +238,17 @@ const config: HardhatUserConfig & { sourcify: {} } = {
       tags: ['staging'],
     },
     arbitrum: {
-      url: 'https://kovan3.arbitrum.io/rpc',
+      url: 'https://arbitrum.llamarpc.com',
       accounts,
-      chainId: 79377087078960,
+      chainId: 42161,
       live: true,
       saveDeployments: true,
       tags: ['staging'],
     },
-    arbitrumGoerli: {
-      url: 'https://arbitrum-goerli.publicnode.com',
+    arbitrumSepolia: {
+      url: 'https://indulgent-small-putty.arbitrum-sepolia.quiknode.pro/7ab4a87931be553808a04f90a2bcc03c6471ece6/',
       accounts,
-      chainId: 421613,
+      chainId: 421614,
       live: true,
       saveDeployments: true,
       tags: ['staging'],
@@ -354,9 +377,65 @@ const config: HardhatUserConfig & { sourcify: {} } = {
     deployer: {
       default: 0,
     },
-    protocolAdmin: {
-      421613: PROTOCOL_ADMIN_MULTISIG,
-      1: PROTOCOL_ADMIN_MULTISIG
+    treasury: {
+      42161: TREASURY_ADDRESS,
+      421613: TREASURY_ADDRESS,
+      421614: TREASURY_ADDRESS,
+      97: TREASURY_ADDRESS
+    },
+    owner: {
+      42161: OWNER_ADDRESS,
+      421613: OWNER_ADDRESS,
+      421614: OWNER_ADDRESS,
+      97: OWNER_ADDRESS
+    },
+    community: {
+      42161: COMMUNITY_ADDRESS,
+      421613: COMMUNITY_ADDRESS,
+      421614: COMMUNITY_ADDRESS,
+      97: COMMUNITY_ADDRESS
+    },
+    team: {
+      42161: TEAM_ADDRESS,
+      421613: TEAM_ADDRESS,
+      421614: TEAM_ADDRESS,
+      97: TEAM_ADDRESS
+    },
+    marketing: {
+      42161: MARKETING_ADDRESS,
+      421613: MARKETING_ADDRESS,
+      421614: MARKETING_ADDRESS,
+      97: MARKETING_ADDRESS
+    },
+    ido: {
+      42161: IDO_ADDRESS,
+      421613: IDO_ADDRESS,
+      421614: IDO_ADDRESS,
+      97: IDO_ADDRESS
+    },
+    farming: {
+      42161: FARMING_ADDRESS,
+      421613: FARMING_ADDRESS,
+      421614: FARMING_ADDRESS,
+      97: FARMING_ADDRESS
+    },
+    liquidity: {
+      42161: LIQUIDITY_ADDRESS,
+      421613: LIQUIDITY_ADDRESS,
+      421614: LIQUIDITY_ADDRESS,
+      97: LIQUIDITY_ADDRESS
+    },
+    fund: {
+      42161: FUND_ADDRESS,
+      421613: FUND_ADDRESS,
+      421614: FUND_ADDRESS,
+      97: FUND_ADDRESS,
+    },
+    fundReceiver: {
+      42161: FUND_RECEIVER_IDO,
+      421613: FUND_RECEIVER_IDO,
+      421614: FUND_RECEIVER_IDO,
+      97: FUND_RECEIVER_IDO,
     }
   },
   preprocess: {

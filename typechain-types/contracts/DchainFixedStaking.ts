@@ -30,102 +30,100 @@ import type {
 export interface DchainFixedStakingInterface extends utils.Interface {
   functions: {
     "Pause()": FunctionFragment;
-    "TEN_MINUTES()": FunctionFragment;
     "UnPause()": FunctionFragment;
     "admin()": FunctionFragment;
-    "baseInterestPerPeriod()": FunctionFragment;
-    "claimReward(uint256)": FunctionFragment;
+    "assetPrices(address)": FunctionFragment;
+    "claimReward(address)": FunctionFragment;
     "commissionInterestLevels(uint256)": FunctionFragment;
-    "createStakingContract(uint256,address)": FunctionFragment;
-    "cycleDuration()": FunctionFragment;
+    "deposit(uint256,address,address)": FunctionFragment;
+    "directInterest()": FunctionFragment;
+    "fallbackRewardTokenPriceInUSD()": FunctionFragment;
     "getF1Invited(address)": FunctionFragment;
-    "interestIncreasePerCycle()": FunctionFragment;
+    "getOfferCurrencyAmountByUSD(address,uint256)": FunctionFragment;
+    "getStakingAmountInOfferCurrency(address,uint256)": FunctionFragment;
+    "interestPerSeconds()": FunctionFragment;
     "joinByReferral(address)": FunctionFragment;
-    "maxInterestPerPeriod()": FunctionFragment;
-    "minimumStakingAmount()": FunctionFragment;
-    "oracle()": FunctionFragment;
+    "maximumEarningsInPercent()": FunctionFragment;
+    "minimumStakingAmountInUSD()": FunctionFragment;
+    "offerCurrencies(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "paused()": FunctionFragment;
-    "pendingReward(address,uint256)": FunctionFragment;
-    "periodDuration()": FunctionFragment;
+    "pendingRewardInUSD(address)": FunctionFragment;
     "poolStatus()": FunctionFragment;
-    "referralInvitationsByCommissionLevel(address,uint256)": FunctionFragment;
     "referredBy(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rewardToken()": FunctionFragment;
+    "stakingContracts(address)": FunctionFragment;
     "totalReferralInvitations(address)": FunctionFragment;
     "totalStaked()": FunctionFragment;
-    "totalStakingContracts()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "treasury()": FunctionFragment;
     "updateAdmin(address)": FunctionFragment;
-    "updateTreasury(address)": FunctionFragment;
-    "userInterestCommissions(address)": FunctionFragment;
-    "userStakingContracts(address,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "Pause"
-      | "TEN_MINUTES"
       | "UnPause"
       | "admin"
-      | "baseInterestPerPeriod"
+      | "assetPrices"
       | "claimReward"
       | "commissionInterestLevels"
-      | "createStakingContract"
-      | "cycleDuration"
+      | "deposit"
+      | "directInterest"
+      | "fallbackRewardTokenPriceInUSD"
       | "getF1Invited"
-      | "interestIncreasePerCycle"
+      | "getOfferCurrencyAmountByUSD"
+      | "getStakingAmountInOfferCurrency"
+      | "interestPerSeconds"
       | "joinByReferral"
-      | "maxInterestPerPeriod"
-      | "minimumStakingAmount"
-      | "oracle"
+      | "maximumEarningsInPercent"
+      | "minimumStakingAmountInUSD"
+      | "offerCurrencies"
       | "owner"
       | "paused"
-      | "pendingReward"
-      | "periodDuration"
+      | "pendingRewardInUSD"
       | "poolStatus"
-      | "referralInvitationsByCommissionLevel"
       | "referredBy"
       | "renounceOwnership"
       | "rewardToken"
+      | "stakingContracts"
       | "totalReferralInvitations"
       | "totalStaked"
-      | "totalStakingContracts"
       | "transferOwnership"
       | "treasury"
       | "updateAdmin"
-      | "updateTreasury"
-      | "userInterestCommissions"
-      | "userStakingContracts"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "Pause", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "TEN_MINUTES",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "UnPause", values?: undefined): string;
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "baseInterestPerPeriod",
-    values?: undefined
+    functionFragment: "assetPrices",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "claimReward",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "commissionInterestLevels",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "createStakingContract",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    functionFragment: "deposit",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "cycleDuration",
+    functionFragment: "directInterest",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fallbackRewardTokenPriceInUSD",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -133,7 +131,15 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "interestIncreasePerCycle",
+    functionFragment: "getOfferCurrencyAmountByUSD",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getStakingAmountInOfferCurrency",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "interestPerSeconds",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -141,31 +147,26 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "maxInterestPerPeriod",
+    functionFragment: "maximumEarningsInPercent",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "minimumStakingAmount",
+    functionFragment: "minimumStakingAmountInUSD",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "offerCurrencies",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "pendingReward",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "periodDuration",
-    values?: undefined
+    functionFragment: "pendingRewardInUSD",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "poolStatus",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "referralInvitationsByCommissionLevel",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "referredBy",
@@ -180,15 +181,15 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "stakingContracts",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "totalReferralInvitations",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "totalStaked",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalStakingContracts",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -200,28 +201,12 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     functionFragment: "updateAdmin",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "updateTreasury",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "userInterestCommissions",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "userStakingContracts",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
 
   decodeFunctionResult(functionFragment: "Pause", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "TEN_MINUTES",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "UnPause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "baseInterestPerPeriod",
+    functionFragment: "assetPrices",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -232,12 +217,13 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     functionFragment: "commissionInterestLevels",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "createStakingContract",
+    functionFragment: "directInterest",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "cycleDuration",
+    functionFragment: "fallbackRewardTokenPriceInUSD",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -245,7 +231,15 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "interestIncreasePerCycle",
+    functionFragment: "getOfferCurrencyAmountByUSD",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getStakingAmountInOfferCurrency",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "interestPerSeconds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -253,29 +247,24 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "maxInterestPerPeriod",
+    functionFragment: "maximumEarningsInPercent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "minimumStakingAmount",
+    functionFragment: "minimumStakingAmountInUSD",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "offerCurrencies",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "pendingReward",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "periodDuration",
+    functionFragment: "pendingRewardInUSD",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "poolStatus", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "referralInvitationsByCommissionLevel",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "referredBy", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -283,6 +272,10 @@ export interface DchainFixedStakingInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "rewardToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stakingContracts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -294,10 +287,6 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "totalStakingContracts",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
@@ -306,51 +295,37 @@ export interface DchainFixedStakingInterface extends utils.Interface {
     functionFragment: "updateAdmin",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateTreasury",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "userInterestCommissions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "userStakingContracts",
-    data: BytesLike
-  ): Result;
 
   events: {
-    "Deposit(address,uint256,uint256)": EventFragment;
+    "Deposited(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
-    "RewardCommissionPaid(address,address,uint256,uint256)": EventFragment;
     "RewardHarvested(address,uint256)": EventFragment;
     "StakingContractCreated(address,address,uint256,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "Withdraw(address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RewardCommissionPaid"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RewardHarvested"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "StakingContractCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 
-export interface DepositEventObject {
+export interface DepositedEventObject {
   user: string;
-  contractId: BigNumber;
+  referrer: string;
   amount: BigNumber;
 }
-export type DepositEvent = TypedEvent<
-  [string, BigNumber, BigNumber],
-  DepositEventObject
+export type DepositedEvent = TypedEvent<
+  [string, string, BigNumber],
+  DepositedEventObject
 >;
 
-export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+export type DepositedEventFilter = TypedEventFilter<DepositedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -370,20 +345,6 @@ export interface PausedEventObject {
 export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
-
-export interface RewardCommissionPaidEventObject {
-  origin: string;
-  receiver: string;
-  level: BigNumber;
-  amount: BigNumber;
-}
-export type RewardCommissionPaidEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  RewardCommissionPaidEventObject
->;
-
-export type RewardCommissionPaidEventFilter =
-  TypedEventFilter<RewardCommissionPaidEvent>;
 
 export interface RewardHarvestedEventObject {
   claimer: string;
@@ -459,18 +420,19 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    TEN_MINUTES(overrides?: CallOverrides): Promise<[number]>;
-
     UnPause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     admin(overrides?: CallOverrides): Promise<[string]>;
 
-    baseInterestPerPeriod(overrides?: CallOverrides): Promise<[number]>;
+    assetPrices(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     claimReward(
-      _contractId: PromiseOrValue<BigNumberish>,
+      _usdToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -479,51 +441,64 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    createStakingContract(
+    deposit(
       amount: PromiseOrValue<BigNumberish>,
+      _token: PromiseOrValue<string>,
       referrer: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    cycleDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
+    directInterest(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    fallbackRewardTokenPriceInUSD(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getF1Invited(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    interestIncreasePerCycle(overrides?: CallOverrides): Promise<[number]>;
+    getOfferCurrencyAmountByUSD(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getStakingAmountInOfferCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    interestPerSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     joinByReferral(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    maxInterestPerPeriod(overrides?: CallOverrides): Promise<[number]>;
+    maximumEarningsInPercent(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    minimumStakingAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
+    minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    oracle(overrides?: CallOverrides): Promise<[string]>;
+    offerCurrencies(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { decimal: BigNumber; rate: BigNumber }
+    >;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
-    pendingReward(
+    pendingRewardInUSD(
       _account: PromiseOrValue<string>,
-      _contractId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    periodDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    poolStatus(overrides?: CallOverrides): Promise<[boolean]>;
-
-    referralInvitationsByCommissionLevel(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    poolStatus(overrides?: CallOverrides): Promise<[boolean]>;
 
     referredBy(
       arg0: PromiseOrValue<string>,
@@ -536,14 +511,25 @@ export interface DchainFixedStaking extends BaseContract {
 
     rewardToken(overrides?: CallOverrides): Promise<[string]>;
 
+    stakingContracts(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+        totalStakesInUSD: BigNumber;
+        claimedInterest: BigNumber;
+        lastClaimedTime: BigNumber;
+        lastUpdatedTime: BigNumber;
+        lastTimeDeposited: BigNumber;
+      }
+    >;
+
     totalReferralInvitations(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     totalStaked(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    totalStakingContracts(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -556,47 +542,11 @@ export interface DchainFixedStaking extends BaseContract {
       _admin: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    userInterestCommissions(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    userStakingContracts(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        boolean
-      ] & {
-        totalStakes: BigNumber;
-        totalWithdrawed: BigNumber;
-        claimedInterest: BigNumber;
-        lastUpdatedTime: BigNumber;
-        lastTimeDeposited: BigNumber;
-        lastTimeClaimed: BigNumber;
-        created: boolean;
-      }
-    >;
   };
 
   Pause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  TEN_MINUTES(overrides?: CallOverrides): Promise<number>;
 
   UnPause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -604,10 +554,13 @@ export interface DchainFixedStaking extends BaseContract {
 
   admin(overrides?: CallOverrides): Promise<string>;
 
-  baseInterestPerPeriod(overrides?: CallOverrides): Promise<number>;
+  assetPrices(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   claimReward(
-    _contractId: PromiseOrValue<BigNumberish>,
+    _usdToken: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -616,51 +569,60 @@ export interface DchainFixedStaking extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  createStakingContract(
+  deposit(
     amount: PromiseOrValue<BigNumberish>,
+    _token: PromiseOrValue<string>,
     referrer: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  cycleDuration(overrides?: CallOverrides): Promise<BigNumber>;
+  directInterest(overrides?: CallOverrides): Promise<BigNumber>;
+
+  fallbackRewardTokenPriceInUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
   getF1Invited(
     _user: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  interestIncreasePerCycle(overrides?: CallOverrides): Promise<number>;
+  getOfferCurrencyAmountByUSD(
+    _token: PromiseOrValue<string>,
+    _amount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getStakingAmountInOfferCurrency(
+    _token: PromiseOrValue<string>,
+    _amount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  interestPerSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
   joinByReferral(
     _user: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  maxInterestPerPeriod(overrides?: CallOverrides): Promise<number>;
+  maximumEarningsInPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
-  minimumStakingAmount(overrides?: CallOverrides): Promise<BigNumber>;
+  minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
-  oracle(overrides?: CallOverrides): Promise<string>;
+  offerCurrencies(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber] & { decimal: BigNumber; rate: BigNumber }>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
   paused(overrides?: CallOverrides): Promise<boolean>;
 
-  pendingReward(
+  pendingRewardInUSD(
     _account: PromiseOrValue<string>,
-    _contractId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
-
-  periodDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-  poolStatus(overrides?: CallOverrides): Promise<boolean>;
-
-  referralInvitationsByCommissionLevel(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  poolStatus(overrides?: CallOverrides): Promise<boolean>;
 
   referredBy(
     arg0: PromiseOrValue<string>,
@@ -673,14 +635,25 @@ export interface DchainFixedStaking extends BaseContract {
 
   rewardToken(overrides?: CallOverrides): Promise<string>;
 
+  stakingContracts(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      totalStakesInUSD: BigNumber;
+      claimedInterest: BigNumber;
+      lastClaimedTime: BigNumber;
+      lastUpdatedTime: BigNumber;
+      lastTimeDeposited: BigNumber;
+    }
+  >;
+
   totalReferralInvitations(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   totalStaked(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalStakingContracts(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -694,53 +667,20 @@ export interface DchainFixedStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  updateTreasury(
-    _treasury: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  userInterestCommissions(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  userStakingContracts(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      boolean
-    ] & {
-      totalStakes: BigNumber;
-      totalWithdrawed: BigNumber;
-      claimedInterest: BigNumber;
-      lastUpdatedTime: BigNumber;
-      lastTimeDeposited: BigNumber;
-      lastTimeClaimed: BigNumber;
-      created: boolean;
-    }
-  >;
-
   callStatic: {
     Pause(overrides?: CallOverrides): Promise<void>;
-
-    TEN_MINUTES(overrides?: CallOverrides): Promise<number>;
 
     UnPause(overrides?: CallOverrides): Promise<void>;
 
     admin(overrides?: CallOverrides): Promise<string>;
 
-    baseInterestPerPeriod(overrides?: CallOverrides): Promise<number>;
+    assetPrices(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     claimReward(
-      _contractId: PromiseOrValue<BigNumberish>,
+      _usdToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -749,51 +689,64 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    createStakingContract(
+    deposit(
       amount: PromiseOrValue<BigNumberish>,
+      _token: PromiseOrValue<string>,
       referrer: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    cycleDuration(overrides?: CallOverrides): Promise<BigNumber>;
+    directInterest(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fallbackRewardTokenPriceInUSD(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getF1Invited(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    interestIncreasePerCycle(overrides?: CallOverrides): Promise<number>;
+    getOfferCurrencyAmountByUSD(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getStakingAmountInOfferCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    interestPerSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
     joinByReferral(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    maxInterestPerPeriod(overrides?: CallOverrides): Promise<number>;
+    maximumEarningsInPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minimumStakingAmount(overrides?: CallOverrides): Promise<BigNumber>;
+    minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
-    oracle(overrides?: CallOverrides): Promise<string>;
+    offerCurrencies(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { decimal: BigNumber; rate: BigNumber }
+    >;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
-    pendingReward(
+    pendingRewardInUSD(
       _account: PromiseOrValue<string>,
-      _contractId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    periodDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-    poolStatus(overrides?: CallOverrides): Promise<boolean>;
-
-    referralInvitationsByCommissionLevel(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    poolStatus(overrides?: CallOverrides): Promise<boolean>;
 
     referredBy(
       arg0: PromiseOrValue<string>,
@@ -804,14 +757,25 @@ export interface DchainFixedStaking extends BaseContract {
 
     rewardToken(overrides?: CallOverrides): Promise<string>;
 
+    stakingContracts(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+        totalStakesInUSD: BigNumber;
+        claimedInterest: BigNumber;
+        lastClaimedTime: BigNumber;
+        lastUpdatedTime: BigNumber;
+        lastTimeDeposited: BigNumber;
+      }
+    >;
+
     totalReferralInvitations(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     totalStaked(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalStakingContracts(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -824,53 +788,19 @@ export interface DchainFixedStaking extends BaseContract {
       _admin: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    userInterestCommissions(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    userStakingContracts(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        boolean
-      ] & {
-        totalStakes: BigNumber;
-        totalWithdrawed: BigNumber;
-        claimedInterest: BigNumber;
-        lastUpdatedTime: BigNumber;
-        lastTimeDeposited: BigNumber;
-        lastTimeClaimed: BigNumber;
-        created: boolean;
-      }
-    >;
   };
 
   filters: {
-    "Deposit(address,uint256,uint256)"(
+    "Deposited(address,address,uint256)"(
       user?: PromiseOrValue<string> | null,
-      contractId?: PromiseOrValue<BigNumberish> | null,
+      referrer?: PromiseOrValue<string> | null,
       amount?: null
-    ): DepositEventFilter;
-    Deposit(
+    ): DepositedEventFilter;
+    Deposited(
       user?: PromiseOrValue<string> | null,
-      contractId?: PromiseOrValue<BigNumberish> | null,
+      referrer?: PromiseOrValue<string> | null,
       amount?: null
-    ): DepositEventFilter;
+    ): DepositedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
@@ -883,19 +813,6 @@ export interface DchainFixedStaking extends BaseContract {
 
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
-
-    "RewardCommissionPaid(address,address,uint256,uint256)"(
-      origin?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      level?: null,
-      amount?: null
-    ): RewardCommissionPaidEventFilter;
-    RewardCommissionPaid(
-      origin?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      level?: null,
-      amount?: null
-    ): RewardCommissionPaidEventFilter;
 
     "RewardHarvested(address,uint256)"(
       claimer?: PromiseOrValue<string> | null,
@@ -937,18 +854,19 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    TEN_MINUTES(overrides?: CallOverrides): Promise<BigNumber>;
-
     UnPause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     admin(overrides?: CallOverrides): Promise<BigNumber>;
 
-    baseInterestPerPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+    assetPrices(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     claimReward(
-      _contractId: PromiseOrValue<BigNumberish>,
+      _usdToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -957,51 +875,62 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    createStakingContract(
+    deposit(
       amount: PromiseOrValue<BigNumberish>,
+      _token: PromiseOrValue<string>,
       referrer: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    cycleDuration(overrides?: CallOverrides): Promise<BigNumber>;
+    directInterest(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fallbackRewardTokenPriceInUSD(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getF1Invited(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    interestIncreasePerCycle(overrides?: CallOverrides): Promise<BigNumber>;
+    getOfferCurrencyAmountByUSD(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getStakingAmountInOfferCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    interestPerSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
     joinByReferral(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    maxInterestPerPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+    maximumEarningsInPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minimumStakingAmount(overrides?: CallOverrides): Promise<BigNumber>;
+    minimumStakingAmountInUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
-    oracle(overrides?: CallOverrides): Promise<BigNumber>;
+    offerCurrencies(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
-    pendingReward(
+    pendingRewardInUSD(
       _account: PromiseOrValue<string>,
-      _contractId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    periodDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     poolStatus(overrides?: CallOverrides): Promise<BigNumber>;
-
-    referralInvitationsByCommissionLevel(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     referredBy(
       arg0: PromiseOrValue<string>,
@@ -1014,14 +943,17 @@ export interface DchainFixedStaking extends BaseContract {
 
     rewardToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    stakingContracts(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     totalReferralInvitations(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     totalStaked(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalStakingContracts(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -1034,22 +966,6 @@ export interface DchainFixedStaking extends BaseContract {
       _admin: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    userInterestCommissions(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    userStakingContracts(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1057,20 +973,19 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    TEN_MINUTES(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     UnPause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    baseInterestPerPeriod(
+    assetPrices(
+      arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     claimReward(
-      _contractId: PromiseOrValue<BigNumberish>,
+      _usdToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1079,20 +994,37 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    createStakingContract(
+    deposit(
       amount: PromiseOrValue<BigNumberish>,
+      _token: PromiseOrValue<string>,
       referrer: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    cycleDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    directInterest(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fallbackRewardTokenPriceInUSD(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getF1Invited(
       _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    interestIncreasePerCycle(
+    getOfferCurrencyAmountByUSD(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getStakingAmountInOfferCurrency(
+      _token: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    interestPerSeconds(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1101,35 +1033,29 @@ export interface DchainFixedStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    maxInterestPerPeriod(
+    maximumEarningsInPercent(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    minimumStakingAmount(
+    minimumStakingAmountInUSD(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    offerCurrencies(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    pendingReward(
+    pendingRewardInUSD(
       _account: PromiseOrValue<string>,
-      _contractId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    periodDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     poolStatus(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    referralInvitationsByCommissionLevel(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     referredBy(
       arg0: PromiseOrValue<string>,
@@ -1142,16 +1068,17 @@ export interface DchainFixedStaking extends BaseContract {
 
     rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    stakingContracts(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     totalReferralInvitations(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     totalStaked(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalStakingContracts(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -1163,22 +1090,6 @@ export interface DchainFixedStaking extends BaseContract {
     updateAdmin(
       _admin: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    userInterestCommissions(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    userStakingContracts(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

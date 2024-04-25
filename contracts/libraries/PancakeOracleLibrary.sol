@@ -3,7 +3,7 @@ pragma solidity ^0.7.6;
 
 //import '@uniswap/v2-core/contracts/interfaces/IPancakePair.sol';
 
-import "../interfaces/IPancakePair.sol";
+import "../interfaces/pancake/IPancakePair.sol";
 import '@uniswap/lib/contracts/libraries/FixedPoint.sol';
 
 // library with helper methods for oracles that are concerned with computing average prices

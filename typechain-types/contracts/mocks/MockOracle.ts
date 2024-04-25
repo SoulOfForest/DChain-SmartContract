@@ -30,10 +30,13 @@ export interface MockOracleInterface extends utils.Interface {
     "consult(address,uint256)": FunctionFragment;
     "getBlockTimestampLast()": FunctionFragment;
     "price0Average()": FunctionFragment;
+    "price0CumulativeLast()": FunctionFragment;
     "price1Average()": FunctionFragment;
+    "price1CumulativeLast()": FunctionFragment;
     "token0()": FunctionFragment;
     "token1()": FunctionFragment;
     "update()": FunctionFragment;
+    "updatePrice(uint224,uint224)": FunctionFragment;
   };
 
   getFunction(
@@ -43,10 +46,13 @@ export interface MockOracleInterface extends utils.Interface {
       | "consult"
       | "getBlockTimestampLast"
       | "price0Average"
+      | "price0CumulativeLast"
       | "price1Average"
+      | "price1CumulativeLast"
       | "token0"
       | "token1"
       | "update"
+      | "updatePrice"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "PERIOD", values?: undefined): string;
@@ -67,12 +73,24 @@ export interface MockOracleInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "price0CumulativeLast",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "price1Average",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "price1CumulativeLast",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "token0", values?: undefined): string;
   encodeFunctionData(functionFragment: "token1", values?: undefined): string;
   encodeFunctionData(functionFragment: "update", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "updatePrice",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
 
   decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
   decodeFunctionResult(
@@ -89,12 +107,24 @@ export interface MockOracleInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "price0CumulativeLast",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "price1Average",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "price1CumulativeLast",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "token0", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "token1", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "update", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updatePrice",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -138,15 +168,29 @@ export interface MockOracle extends BaseContract {
 
     getBlockTimestampLast(overrides?: CallOverrides): Promise<[number]>;
 
-    price0Average(overrides?: CallOverrides): Promise<[BigNumber]>;
+    price0Average(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { _x: BigNumber }>;
 
-    price1Average(overrides?: CallOverrides): Promise<[BigNumber]>;
+    price0CumulativeLast(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    price1Average(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { _x: BigNumber }>;
+
+    price1CumulativeLast(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     token0(overrides?: CallOverrides): Promise<[string]>;
 
     token1(overrides?: CallOverrides): Promise<[string]>;
 
     update(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updatePrice(
+      _price0Average: PromiseOrValue<BigNumberish>,
+      _price1Average: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -165,13 +209,23 @@ export interface MockOracle extends BaseContract {
 
   price0Average(overrides?: CallOverrides): Promise<BigNumber>;
 
+  price0CumulativeLast(overrides?: CallOverrides): Promise<BigNumber>;
+
   price1Average(overrides?: CallOverrides): Promise<BigNumber>;
+
+  price1CumulativeLast(overrides?: CallOverrides): Promise<BigNumber>;
 
   token0(overrides?: CallOverrides): Promise<string>;
 
   token1(overrides?: CallOverrides): Promise<string>;
 
   update(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updatePrice(
+    _price0Average: PromiseOrValue<BigNumberish>,
+    _price1Average: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -190,13 +244,23 @@ export interface MockOracle extends BaseContract {
 
     price0Average(overrides?: CallOverrides): Promise<BigNumber>;
 
+    price0CumulativeLast(overrides?: CallOverrides): Promise<BigNumber>;
+
     price1Average(overrides?: CallOverrides): Promise<BigNumber>;
+
+    price1CumulativeLast(overrides?: CallOverrides): Promise<BigNumber>;
 
     token0(overrides?: CallOverrides): Promise<string>;
 
     token1(overrides?: CallOverrides): Promise<string>;
 
     update(overrides?: CallOverrides): Promise<void>;
+
+    updatePrice(
+      _price0Average: PromiseOrValue<BigNumberish>,
+      _price1Average: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
@@ -216,13 +280,23 @@ export interface MockOracle extends BaseContract {
 
     price0Average(overrides?: CallOverrides): Promise<BigNumber>;
 
+    price0CumulativeLast(overrides?: CallOverrides): Promise<BigNumber>;
+
     price1Average(overrides?: CallOverrides): Promise<BigNumber>;
+
+    price1CumulativeLast(overrides?: CallOverrides): Promise<BigNumber>;
 
     token0(overrides?: CallOverrides): Promise<BigNumber>;
 
     token1(overrides?: CallOverrides): Promise<BigNumber>;
 
     update(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updatePrice(
+      _price0Average: PromiseOrValue<BigNumberish>,
+      _price1Average: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -246,13 +320,27 @@ export interface MockOracle extends BaseContract {
 
     price0Average(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    price0CumulativeLast(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     price1Average(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    price1CumulativeLast(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     token0(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     token1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     update(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updatePrice(
+      _price0Average: PromiseOrValue<BigNumberish>,
+      _price1Average: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

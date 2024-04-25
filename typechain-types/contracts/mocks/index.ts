@@ -3,5 +3,7 @@
 /* eslint-disable */
 import type * as usdcSol from "./USDC.sol";
 export type { usdcSol };
+import type * as usdtSol from "./USDT.sol";
+export type { usdtSol };
 export type { MockERC20 } from "./MockERC20";
 export type { MockOracle } from "./MockOracle";
