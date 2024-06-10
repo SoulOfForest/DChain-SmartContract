@@ -9,14 +9,13 @@ const deployDGWSwap: DeployFunction = async (hre: HardhatRuntimeEnvironment) => 
 
     const dwTokenAddress = process.env.DW_ADDRESS;
 
-    const { address: usdcAddress } = await deploy('DGWSwap', {
+    const { address: usdcAddress } = await deploy('MockDGWSwap', {
         from: deployer,
         args: [
-            owner,
-            "0xa41bCaC3a3B8674c9Bbc02Df9Cd8B871d9905aFB",
-            farming,
-            dwTokenAddress,
-            "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9"
+            // owner,
+            // "0xa41bCaC3a3B8674c9Bbc02Df9Cd8B871d9905aFB",
+            // dwTokenAddress,
+            // "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9"
             // "0xd6F8595B0a1808dA9b529Da525F1101716618D1A",
             // "0xd817dc637D7c7885c890827572467DEcf124bCec",
             // "0x5d20cb3A06266eed62e518eBD58aC74b0b0f2d29",
@@ -33,7 +32,7 @@ const deployDGWSwap: DeployFunction = async (hre: HardhatRuntimeEnvironment) => 
     });
 };
 
-deployDGWSwap.tags = ['DGW_SWAP'];
+deployDGWSwap.tags = ['MOCK_DGW_SWAP'];
 // deployDGWPayment.skip = () => Promise.resolve(true);
 
 export default deployDGWSwap;

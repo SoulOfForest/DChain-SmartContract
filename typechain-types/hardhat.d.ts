@@ -161,6 +161,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IDDXVault__factory>;
     getContractFactory(
+      name: "IEACAggregatorProxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IEACAggregatorProxy__factory>;
+    getContractFactory(
       name: "IERC173",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC173__factory>;
@@ -212,6 +216,10 @@ declare module "hardhat/types/runtime" {
       name: "UpkeepLibrary",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UpkeepLibrary__factory>;
+    getContractFactory(
+      name: "MockDGWSwap",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockDGWSwap__factory>;
     getContractFactory(
       name: "MockERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -515,6 +523,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IDDXVault>;
     getContractAt(
+      name: "IEACAggregatorProxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IEACAggregatorProxy>;
+    getContractAt(
       name: "IERC173",
       address: string,
       signer?: ethers.Signer
@@ -579,6 +592,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.UpkeepLibrary>;
+    getContractAt(
+      name: "MockDGWSwap",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockDGWSwap>;
     getContractAt(
       name: "MockERC20",
       address: string,

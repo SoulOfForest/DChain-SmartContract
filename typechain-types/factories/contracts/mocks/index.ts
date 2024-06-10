@@ -3,5 +3,6 @@
 /* eslint-disable */
 export * as usdcSol from "./USDC.sol";
 export * as usdtSol from "./USDT.sol";
+export { MockDGWSwap__factory } from "./MockDGWSwap__factory";
 export { MockERC20__factory } from "./MockERC20__factory";
 export { MockOracle__factory } from "./MockOracle__factory";

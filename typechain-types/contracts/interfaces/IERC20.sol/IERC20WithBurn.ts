@@ -33,6 +33,7 @@ export interface IERC20WithBurnInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
+    "decimals()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
@@ -44,6 +45,7 @@ export interface IERC20WithBurnInterface extends utils.Interface {
       | "approve"
       | "balanceOf"
       | "burn"
+      | "decimals"
       | "totalSupply"
       | "transfer"
       | "transferFrom"
@@ -65,6 +67,7 @@ export interface IERC20WithBurnInterface extends utils.Interface {
     functionFragment: "burn",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -86,6 +89,7 @@ export interface IERC20WithBurnInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -178,6 +182,8 @@ export interface IERC20WithBurn extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    decimals(overrides?: CallOverrides): Promise<[number]>;
+
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transfer(
@@ -216,6 +222,8 @@ export interface IERC20WithBurn extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  decimals(overrides?: CallOverrides): Promise<number>;
+
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transfer(
@@ -253,6 +261,8 @@ export interface IERC20WithBurn extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    decimals(overrides?: CallOverrides): Promise<number>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -317,6 +327,8 @@ export interface IERC20WithBurn extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    decimals(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
@@ -355,6 +367,8 @@ export interface IERC20WithBurn extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

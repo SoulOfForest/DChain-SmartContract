@@ -8,6 +8,7 @@ import "./interfaces/IDChainStaking.sol";
 import "./interfaces/IDDXVault.sol";
 import "./interfaces/IDDXStaking.sol";
 import "./interfaces/IDWVault.sol";
+import "./interfaces/IEACAggregatorProxy.sol";
 import "./DChainBase.sol";
 import "./libraries/TransferHelper.sol";
 import "hardhat/console.sol";
@@ -91,6 +92,10 @@ contract DGWStaking is IDChainStaking, DChainBase {
   mapping(address => uint) public ddxRewardDistributionCount;
 
   uint public maximumDDXRewardDistributionCount;
+  uint public extraRewardBonusPercentage;
+
+  // Asset token => (chainlink supports)
+  mapping(address => address) public assetPricesWithChainLink;
 
   event ComissionDirectBonus(
     address indexed user,
@@ -173,6 +178,19 @@ contract DGWStaking is IDChainStaking, DChainBase {
 
   function setRoot(address _root) external onlyAdmin {
     root = _root;
+  }
+
+  function setChainLinkAssetOracle(
+    address _stakeToken,
+    address _oracle
+  ) external onlyRole(SUB_ADMIN_ROLE) {
+    assetPricesWithChainLink[_stakeToken] = _oracle;
+  }
+
+  function setExtraRewardBonusPercentage(
+    uint256 _extraRewardBonusPercentage
+  ) external onlyRole(SUB_ADMIN_ROLE) {
+    extraRewardBonusPercentage = _extraRewardBonusPercentage;
   }
 
   function setMaximumDDXRewardDistribution(
@@ -441,10 +459,20 @@ contract DGWStaking is IDChainStaking, DChainBase {
     uint256 _stakingAmount
   ) internal returns (uint256 totalStakingAmountInUSD) {
     address oracle = assetPrices[_stakeToken];
+    address chainLinkOracle = assetPricesWithChainLink[_stakeToken];
 
     uint256 amountOut;
 
-    if (oracle != address(0)) {
+    if (chainLinkOracle != address(0)) {
+      int256 assetPrice = IEACAggregatorProxy(chainLinkOracle).latestAnswer();
+      uint256 decimals = (10 **
+        (IEACAggregatorProxy(chainLinkOracle).decimals() +
+          IERC20WithBurn(_stakeToken).decimals() -
+          6));
+      amountOut = (_stakingAmount * uint256(assetPrice)) / decimals;
+    }
+
+    if (chainLinkOracle == address(0) && oracle != address(0)) {
       // Update oracle Pricing when time elapsed has passed
       if (
         block.timestamp - IOracleSimple(oracle).getBlockTimestampLast() >
@@ -480,10 +508,20 @@ contract DGWStaking is IDChainStaking, DChainBase {
     uint totalStakingAmountInUSD;
 
     address oracle = assetPrices[_stakeToken];
+    address chainLinkOracle = assetPricesWithChainLink[_stakeToken];
 
     uint256 amountOut;
 
-    if (oracle != address(0)) {
+    if (chainLinkOracle != address(0)) {
+      int256 assetPrice = IEACAggregatorProxy(chainLinkOracle).latestAnswer();
+      uint256 decimals = (10 **
+        (IEACAggregatorProxy(chainLinkOracle).decimals() +
+          IERC20WithBurn(_stakeToken).decimals() -
+          6));
+      amountOut = (_stakingAmount * uint256(assetPrice)) / decimals;
+    }
+
+    if (chainLinkOracle == address(0) && oracle != address(0)) {
       // Update oracle Pricing when time elapsed has passed
       if (
         block.timestamp - IOracleSimple(oracle).getBlockTimestampLast() >
@@ -778,7 +816,10 @@ contract DGWStaking is IDChainStaking, DChainBase {
     }
 
     // Transfer extra DDX reward token to investor
-    uint extraRewardTokenAmount = DDXStaking.getAmountDDXByUSD(_amountOutInUSD);
+    uint extraRewardTokenAmount = DDXStaking.getAmountDDXByUSD(
+      (_amountOutInUSD * extraRewardBonusPercentage) /
+        INTEREST_RATE_PRECISION_POINT
+    );
     if (extraRewardTokenAmount > 0 && DDXVault.rewardApplicable()) {
       DDXVault.rewardFromDWStaking(_user, extraRewardTokenAmount);
       ddxRewardDistributionCount[_user] += 1;

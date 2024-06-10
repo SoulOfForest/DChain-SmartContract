@@ -238,7 +238,7 @@ const config = {
       tags: ['staging'],
     },
     arbitrum: {
-      url: 'https://arbitrum.llamarpc.com',
+      url: 'https://arb-mainnet.g.alchemy.com/v2/bLJzrZKYmJuIrfBozFuFXFsuXeWF54UN',
       accounts,
       chainId: 42161,
       live: true,
