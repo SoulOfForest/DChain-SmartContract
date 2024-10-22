@@ -28,7 +28,7 @@ const deployDGWSwap: DeployFunction = async (hre: HardhatRuntimeEnvironment) => 
         // proxy: {
         //     proxyContract: 'OpenZeppelinTransparentProxy',
         //     upgradeIndex: 0,
-        //     methodName: 'initialize'
+        //     methodName: 'initialize',
         // },
     });
 };

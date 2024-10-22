@@ -12,6 +12,7 @@ export * as proxy from "./proxy";
 export { DChainBase__factory } from "./DChainBase__factory";
 export { DGEStaking__factory } from "./DGEStaking__factory";
 export { DGEVault__factory } from "./DGEVault__factory";
+export { DGWBlacklist__factory } from "./DGWBlacklist__factory";
 export { DGWPayment__factory } from "./DGWPayment__factory";
 export { DGWStaking__factory } from "./DGWStaking__factory";
 export { DGWSwap__factory } from "./DGWSwap__factory";

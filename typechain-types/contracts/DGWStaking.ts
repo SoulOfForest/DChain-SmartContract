@@ -80,6 +80,7 @@ export interface DGWStakingInterface extends utils.Interface {
     "assetPrices(address)": FunctionFragment;
     "assetPricesWithChainLink(address)": FunctionFragment;
     "assetPricesWithUniV3PoolCompatible(address)": FunctionFragment;
+    "blacklist()": FunctionFragment;
     "claimDuration()": FunctionFragment;
     "claimMultipleRewards(uint256[])": FunctionFragment;
     "claimReward(uint256)": FunctionFragment;
@@ -127,6 +128,7 @@ export interface DGWStakingInterface extends utils.Interface {
     "setAllowedStakeToken(address)": FunctionFragment;
     "setAssetOracle(address,address)": FunctionFragment;
     "setAssetUniV3PoolCompatible(address,address)": FunctionFragment;
+    "setBlacklist(address)": FunctionFragment;
     "setChainLinkAssetOracle(address,address)": FunctionFragment;
     "setClaimDuration(uint64)": FunctionFragment;
     "setDDXStaking(address)": FunctionFragment;
@@ -164,6 +166,7 @@ export interface DGWStakingInterface extends utils.Interface {
       | "assetPrices"
       | "assetPricesWithChainLink"
       | "assetPricesWithUniV3PoolCompatible"
+      | "blacklist"
       | "claimDuration"
       | "claimMultipleRewards"
       | "claimReward"
@@ -211,6 +214,7 @@ export interface DGWStakingInterface extends utils.Interface {
       | "setAllowedStakeToken"
       | "setAssetOracle"
       | "setAssetUniV3PoolCompatible"
+      | "setBlacklist"
       | "setChainLinkAssetOracle"
       | "setClaimDuration"
       | "setDDXStaking"
@@ -276,6 +280,7 @@ export interface DGWStakingInterface extends utils.Interface {
     functionFragment: "assetPricesWithUniV3PoolCompatible",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "blacklist", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "claimDuration",
     values?: undefined
@@ -468,6 +473,10 @@ export interface DGWStakingInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setBlacklist",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setChainLinkAssetOracle",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
@@ -583,6 +592,7 @@ export interface DGWStakingInterface extends utils.Interface {
     functionFragment: "assetPricesWithUniV3PoolCompatible",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "claimDuration",
     data: BytesLike
@@ -739,6 +749,10 @@ export interface DGWStakingInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setAssetUniV3PoolCompatible",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setBlacklist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1054,6 +1068,8 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    blacklist(overrides?: CallOverrides): Promise<[string]>;
+
     claimDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     claimMultipleRewards(
@@ -1274,6 +1290,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setBlacklist(
+      _blacklist: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setChainLinkAssetOracle(
       _stakeToken: PromiseOrValue<string>,
       _oracle: PromiseOrValue<string>,
@@ -1432,6 +1453,8 @@ export interface DGWStaking extends BaseContract {
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  blacklist(overrides?: CallOverrides): Promise<string>;
 
   claimDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1651,6 +1674,11 @@ export interface DGWStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setBlacklist(
+    _blacklist: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setChainLinkAssetOracle(
     _stakeToken: PromiseOrValue<string>,
     _oracle: PromiseOrValue<string>,
@@ -1809,6 +1837,8 @@ export interface DGWStaking extends BaseContract {
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    blacklist(overrides?: CallOverrides): Promise<string>;
 
     claimDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2025,6 +2055,11 @@ export interface DGWStaking extends BaseContract {
     setAssetUniV3PoolCompatible(
       _stakeToken: PromiseOrValue<string>,
       _pool: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setBlacklist(
+      _blacklist: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2310,6 +2345,8 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    blacklist(overrides?: CallOverrides): Promise<BigNumber>;
+
     claimDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimMultipleRewards(
@@ -2528,6 +2565,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setBlacklist(
+      _blacklist: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setChainLinkAssetOracle(
       _stakeToken: PromiseOrValue<string>,
       _oracle: PromiseOrValue<string>,
@@ -2665,6 +2707,8 @@ export interface DGWStaking extends BaseContract {
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    blacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claimDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2889,6 +2933,11 @@ export interface DGWStaking extends BaseContract {
     setAssetUniV3PoolCompatible(
       _stakeToken: PromiseOrValue<string>,
       _pool: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setBlacklist(
+      _blacklist: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

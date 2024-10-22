@@ -27,6 +27,42 @@ import type {
   PromiseOrValue,
 } from "../common";
 
+export declare namespace DGWVault {
+  export type VestingScheduleStruct = {
+    beneficiary: PromiseOrValue<string>;
+    cliff: PromiseOrValue<BigNumberish>;
+    start: PromiseOrValue<BigNumberish>;
+    duration: PromiseOrValue<BigNumberish>;
+    slicePeriodSeconds: PromiseOrValue<BigNumberish>;
+    revocable: PromiseOrValue<boolean>;
+    amountTotal: PromiseOrValue<BigNumberish>;
+    released: PromiseOrValue<BigNumberish>;
+    revoked: PromiseOrValue<boolean>;
+  };
+
+  export type VestingScheduleStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    boolean,
+    BigNumber,
+    BigNumber,
+    boolean
+  ] & {
+    beneficiary: string;
+    cliff: BigNumber;
+    start: BigNumber;
+    duration: BigNumber;
+    slicePeriodSeconds: BigNumber;
+    revocable: boolean;
+    amountTotal: BigNumber;
+    released: BigNumber;
+    revoked: boolean;
+  };
+}
+
 export interface DGWVaultInterface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
@@ -74,6 +110,7 @@ export interface DGWVaultInterface extends utils.Interface {
     "totalRaised()": FunctionFragment;
     "totalSold()": FunctionFragment;
     "treasury()": FunctionFragment;
+    "userVestingSchedules(address)": FunctionFragment;
     "vestingDuration()": FunctionFragment;
     "vestingPeriodInSeconds()": FunctionFragment;
     "vestingSchedules(address)": FunctionFragment;
@@ -126,6 +163,7 @@ export interface DGWVaultInterface extends utils.Interface {
       | "totalRaised"
       | "totalSold"
       | "treasury"
+      | "userVestingSchedules"
       | "vestingDuration"
       | "vestingPeriodInSeconds"
       | "vestingSchedules"
@@ -305,6 +343,10 @@ export interface DGWVaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "totalSold", values?: undefined): string;
   encodeFunctionData(functionFragment: "treasury", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "userVestingSchedules",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "vestingDuration",
     values?: undefined
   ): string;
@@ -449,6 +491,10 @@ export interface DGWVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "totalSold", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "treasury", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "userVestingSchedules",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "vestingDuration",
     data: BytesLike
@@ -803,11 +849,7 @@ export interface DGWVault extends BaseContract {
 
     treasury(overrides?: CallOverrides): Promise<[string]>;
 
-    vestingDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    vestingSchedules(
+    userVestingSchedules(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<
@@ -833,6 +875,15 @@ export interface DGWVault extends BaseContract {
         revoked: boolean;
       }
     >;
+
+    vestingDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    vestingSchedules(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[DGWVault.VestingScheduleStructOutput]>;
   };
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
@@ -1028,11 +1079,7 @@ export interface DGWVault extends BaseContract {
 
   treasury(overrides?: CallOverrides): Promise<string>;
 
-  vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-  vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
-
-  vestingSchedules(
+  userVestingSchedules(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<
@@ -1058,6 +1105,15 @@ export interface DGWVault extends BaseContract {
       revoked: boolean;
     }
   >;
+
+  vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
+
+  vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+  vestingSchedules(
+    _user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<DGWVault.VestingScheduleStructOutput>;
 
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
@@ -1251,11 +1307,7 @@ export interface DGWVault extends BaseContract {
 
     treasury(overrides?: CallOverrides): Promise<string>;
 
-    vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
-
-    vestingSchedules(
+    userVestingSchedules(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<
@@ -1281,6 +1333,15 @@ export interface DGWVault extends BaseContract {
         revoked: boolean;
       }
     >;
+
+    vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vestingSchedules(
+      _user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<DGWVault.VestingScheduleStructOutput>;
   };
 
   filters: {
@@ -1552,12 +1613,17 @@ export interface DGWVault extends BaseContract {
 
     treasury(overrides?: CallOverrides): Promise<BigNumber>;
 
+    userVestingSchedules(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     vestingDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     vestingPeriodInSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
     vestingSchedules(
-      arg0: PromiseOrValue<string>,
+      _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -1754,6 +1820,11 @@ export interface DGWVault extends BaseContract {
 
     treasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    userVestingSchedules(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     vestingDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     vestingPeriodInSeconds(
@@ -1761,7 +1832,7 @@ export interface DGWVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     vestingSchedules(
-      arg0: PromiseOrValue<string>,
+      _user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

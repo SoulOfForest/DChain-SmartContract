@@ -1,7 +1,7 @@
 import { Proxy } from './../typechain-types/@openzeppelin/contracts/proxy/Proxy';
 import { setBalance, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 import BigNumber from 'bignumber.js';
 
 describe('Staking', async () => {
@@ -11,46 +11,80 @@ describe('Staking', async () => {
         const MULTI_SIG_ADDRESS = "0x7029de523e6c95348b2b98c2511b0cc3f1549e12";
         const DW_VAULT_ADDRESS = "0x500621723db48C93930e1A0E4C61E08957c3ECD1";
         const DW_STAKING_ADDRESS = "0xa41bCaC3a3B8674c9Bbc02Df9Cd8B871d9905aFB";
+        const CONTRACT_OWNER_ADDRESS = "0x0728bebA33844A83675E402639CfdDDB099E6FC5";
+
+        const INVESTOR_1_ADDRESS = "0xBBc650de6ce3795Ab53230cb31fa613443C994a5";
+        const INVESTOR_2_ADDRESS = "0xaC2c82e6f89b810bAe10Fa891986076253aB55c9";
 
         const proxyAdmin = await ethers.getContractAt("ProxyAdmin", "0xA0c6063A229D8628916EC25689A23Ed191D49bDd");
         const dwVault = await ethers.getContractAt("DGWVault", DW_VAULT_ADDRESS);
 
-        const impersonatedSigner = await ethers.getImpersonatedSigner("0xbD7D95b5Fc017186a23D0284BeC08D0E694d1F99");
-
+        const impersonatedInvestor1 = await ethers.getImpersonatedSigner(INVESTOR_1_ADDRESS);
+        const impersonatedInvestor2 = await ethers.getImpersonatedSigner(INVESTOR_2_ADDRESS);
 
         const impersonatedContractOwnerSigner = await ethers.getImpersonatedSigner(MULTI_SIG_ADDRESS);
         const impersonatedSubAdmin = await ethers.getImpersonatedSigner(SUB_ADMIN_ADDRESS);
+        const impersonatedContractOwner = await ethers.getImpersonatedSigner(CONTRACT_OWNER_ADDRESS);
 
+
+        await setBalance(CONTRACT_OWNER_ADDRESS, 100n ** 18n);
         await setBalance(MULTI_SIG_ADDRESS, 100n ** 18n);
         await setBalance(SUB_ADMIN_ADDRESS, 100n ** 18n);
+        await setBalance(INVESTOR_1_ADDRESS, 100n ** 18n);
+        await setBalance(INVESTOR_2_ADDRESS, 100n ** 18n);
+
+        const DGWBlacklist = await ethers.getContractFactory("DGWBlacklist");
+        const dwBlacklist = await upgrades.deployProxy(DGWBlacklist, [CONTRACT_OWNER_ADDRESS]);
 
         const DWStakingWithBlacklist = await ethers.getContractFactory("DGWStaking");
-        const implementation = (await DWStakingWithBlacklist.deploy());
+        const implementation = await DWStakingWithBlacklist.deploy();
 
         await proxyAdmin.connect(impersonatedContractOwnerSigner).upgrade(DW_STAKING_ADDRESS, implementation.address);
 
         const dwStaking = await ethers.getContractAt("DGWStaking", DW_STAKING_ADDRESS);
 
-        let randomAddresses: string[] = [];
-        const promises: Promise<any>[] = [];
-        for (let i = 0; i < 2; i++) {
+        // set blacklist new address
+        await dwStaking.connect(impersonatedSubAdmin).setBlacklist(dwBlacklist.address);
+
+        let randomAddresses: string[] = [
+            impersonatedInvestor1.address,
+            impersonatedInvestor2.address
+        ];
+
+        for (let i = 0; i < 30; i++) {
             let user_address = ethers.Wallet.createRandom().address;
             console.log("wallet index: ", i, user_address);
             randomAddresses.push(user_address);
-            await dwStaking.connect(impersonatedSubAdmin).addToBlacklist(user_address);
         }
 
-        // await Promise.all(promises);
+        for (let i = 0; i < randomAddresses.length; i++) {
+            await dwBlacklist.connect(impersonatedContractOwner).addToBlacklist(randomAddresses[i]);
+        }
 
-        console.log("done");
+        console.log(await dwBlacklist.queryBlackListPagination(0, 50), randomAddresses[10]);
 
-        const now = Date.now();
 
-        console.log(await dwStaking.queryBlackListPagination(0, 50));
+        await expect(dwStaking.connect(impersonatedInvestor1).claimMultipleRewards([313])).to.be.revertedWith("pool: user is blacklisted");
+        await expect(dwStaking.connect(impersonatedInvestor2).claimMultipleRewards([314])).to.be.revertedWith("pool: user is blacklisted");
 
-        console.log("take: ", Date.now() - now);
+        await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor1.address);
 
-        console.log(await dwStaking.getBlackListUserByIndexaaaa());
+        await expect(dwStaking.connect(impersonatedInvestor1).claimMultipleRewards([313])).to.not.reverted;
+
+        await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
+
+        await expect(dwStaking.connect(impersonatedInvestor2).claimMultipleRewards([314])).to.not.reverted;
+
+        await dwBlacklist.connect(impersonatedContractOwner).addToBlacklist(impersonatedInvestor1.address);
+
+        await expect(dwStaking.connect(impersonatedInvestor1).claimMultipleRewards([313])).to.be.revertedWith("pool: user is blacklisted");
+
+        await expect(dwBlacklist.connect(impersonatedContractOwner).addToBlacklist(impersonatedInvestor1.address)).to.be.rejectedWith("blacklist: user is blacklisted");
+
+        await dwBlacklist.connect(impersonatedContractOwner).addToBlacklist(impersonatedInvestor2.address);
+
+        await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
+        await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
 
         // 0x7029de523e6c95348b2b98c2511b0cc3f1549e12
         // const deployed

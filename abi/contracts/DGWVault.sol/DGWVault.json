@@ -938,32 +938,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "vestingDuration",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "vestingPeriodInSeconds",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -971,7 +945,7 @@
         "type": "address"
       }
     ],
-    "name": "vestingSchedules",
+    "name": "userVestingSchedules",
     "outputs": [
       {
         "internalType": "address",
@@ -1017,6 +991,98 @@
         "internalType": "bool",
         "name": "revoked",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "vestingDuration",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "vestingPeriodInSeconds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "vestingSchedules",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cliff",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "start",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "slicePeriodSeconds",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "revocable",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountTotal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "released",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "revoked",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DGWVault.VestingSchedule",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",

@@ -492,6 +492,19 @@
   },
   {
     "inputs": [],
+    "name": "blacklist",
+    "outputs": [
+      {
+        "internalType": "contract IDGWBlacklist",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "claimDuration",
     "outputs": [
       {
@@ -1379,6 +1392,19 @@
       }
     ],
     "name": "setAssetUniV3PoolCompatible",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IDGWBlacklist",
+        "name": "_blacklist",
+        "type": "address"
+      }
+    ],
+    "name": "setBlacklist",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

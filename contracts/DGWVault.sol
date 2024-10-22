@@ -79,7 +79,7 @@ contract DGWVault is DChainBase {
   // Sender -> pending claim
   mapping(address => uint) public pendingSoldTokenClaim;
   // sender -> vesting schedule
-  mapping(address => VestingSchedule) public vestingSchedules;
+  mapping(address => VestingSchedule) public userVestingSchedules;
 
   mapping(address => uint) public totalPurchased;
 
@@ -126,7 +126,7 @@ contract DGWVault is DChainBase {
    * @notice Release vested amount of tokens.
    */
   function release() public nonReentrant {
-    VestingSchedule storage vestingSchedule = vestingSchedules[msg.sender];
+    VestingSchedule storage vestingSchedule = userVestingSchedules[msg.sender];
     bool isBeneficiary = msg.sender == vestingSchedule.beneficiary;
 
     require(
@@ -174,7 +174,7 @@ contract DGWVault is DChainBase {
     address _referrer
   ) external {
     address sender = msg.sender;
-    VestingSchedule storage vestingSchedule = vestingSchedules[sender];
+    VestingSchedule storage vestingSchedule = userVestingSchedules[sender];
 
     if (_lockedAmount > 0 && availableToStakeThroughVault(sender)) {
       require(
@@ -283,7 +283,9 @@ contract DGWVault is DChainBase {
       _deliverTokens(_beneficiary, tgeAmount);
     }
 
-    VestingSchedule storage vestingSchedule = vestingSchedules[_beneficiary];
+    VestingSchedule storage vestingSchedule = userVestingSchedules[
+      _beneficiary
+    ];
 
     if (vestingSchedule.beneficiary == address(0)) {
       _createVestingSchedule(
@@ -328,14 +330,32 @@ contract DGWVault is DChainBase {
     offeredCurrency.decimals = _decimals;
   }
 
+  function vestingSchedules(
+    address _user
+  ) public view returns (VestingSchedule memory) {
+    VestingSchedule storage vestingSchedule = userVestingSchedules[_user];
+    return
+      VestingSchedule({
+        beneficiary: vestingSchedule.beneficiary,
+        cliff: type(uint256).max,
+        start: type(uint256).max,
+        duration: vestingSchedule.duration,
+        slicePeriodSeconds: vestingSchedule.slicePeriodSeconds,
+        revocable: vestingSchedule.revocable,
+        amountTotal: vestingSchedule.amountTotal,
+        released: vestingSchedule.released,
+        revoked: vestingSchedule.revoked
+      });
+  }
+
   function releasableAmount(address _user) external view returns (uint) {
-    return _computeReleasableAmount(vestingSchedules[_user]);
+    return _computeReleasableAmount(userVestingSchedules[_user]);
   }
 
   function availableToStakeThroughVault(
     address _user
   ) public view returns (bool) {
-    VestingSchedule storage vestingSchedule = vestingSchedules[_user];
+    VestingSchedule memory vestingSchedule = vestingSchedules(_user);
     return block.timestamp <= vestingSchedule.start;
   }
 
@@ -442,7 +462,7 @@ contract DGWVault is DChainBase {
     );
     require(_duration >= _cliff, "TokenVesting: duration must be >= cliff");
     uint256 cliff = _start + _cliff;
-    vestingSchedules[_beneficiary] = VestingSchedule(
+    userVestingSchedules[_beneficiary] = VestingSchedule(
       _beneficiary,
       cliff,
       _start,

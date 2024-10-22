@@ -20,6 +20,7 @@ export type { proxy };
 export type { DChainBase } from "./DChainBase";
 export type { DGEStaking } from "./DGEStaking";
 export type { DGEVault } from "./DGEVault";
+export type { DGWBlacklist } from "./DGWBlacklist";
 export type { DGWPayment } from "./DGWPayment";
 export type { DGWStaking } from "./DGWStaking";
 export type { DGWSwap } from "./DGWSwap";

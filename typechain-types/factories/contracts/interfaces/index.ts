@@ -6,6 +6,7 @@ export * as pancake from "./pancake";
 export { IDChainStaking__factory } from "./IDChainStaking__factory";
 export { IDDXStaking__factory } from "./IDDXStaking__factory";
 export { IDDXVault__factory } from "./IDDXVault__factory";
+export { IDGWBlacklist__factory } from "./IDGWBlacklist__factory";
 export { IEACAggregatorProxy__factory } from "./IEACAggregatorProxy__factory";
 export { IERC173__factory } from "./IERC173__factory";
 export { IKeeperCompatible__factory } from "./IKeeperCompatible__factory";

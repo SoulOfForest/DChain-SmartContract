@@ -169,6 +169,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.DGWToken__factory>;
     getContractFactory(
+      name: "DGWBlacklist",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DGWBlacklist__factory>;
+    getContractFactory(
       name: "DGWPayment",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.DGWPayment__factory>;
@@ -196,6 +200,10 @@ declare module "hardhat/types/runtime" {
       name: "IDDXVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IDDXVault__factory>;
+    getContractFactory(
+      name: "IDGWBlacklist",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDGWBlacklist__factory>;
     getContractFactory(
       name: "IEACAggregatorProxy",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -585,6 +593,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.DGWToken>;
     getContractAt(
+      name: "DGWBlacklist",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DGWBlacklist>;
+    getContractAt(
       name: "DGWPayment",
       address: string,
       signer?: ethers.Signer
@@ -619,6 +632,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IDDXVault>;
+    getContractAt(
+      name: "IDGWBlacklist",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDGWBlacklist>;
     getContractAt(
       name: "IEACAggregatorProxy",
       address: string,

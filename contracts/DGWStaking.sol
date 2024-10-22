@@ -11,13 +11,12 @@ import "./interfaces/IDWVault.sol";
 import "./interfaces/IEACAggregatorProxy.sol";
 import "./DChainBase.sol";
 import "./libraries/TransferHelper.sol";
-
+import "./interfaces/IDGWBlacklist.sol";
 import "./libraries/OracleLibrary.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
 contract DGWStaking is IDChainStaking, DChainBase {
   using SafeERC20 for IERC20WithBurn;
-
   struct StakingInfo {
     uint256 totalExpectedInterest;
     uint256 totalStakesInUSD;
@@ -101,6 +100,8 @@ contract DGWStaking is IDChainStaking, DChainBase {
 
   mapping(address => address) public assetPricesWithUniV3PoolCompatible;
 
+  IDGWBlacklist public blacklist;
+
   event ComissionDirectBonus(
     address indexed user,
     address indexed recipient,
@@ -179,6 +180,12 @@ contract DGWStaking is IDChainStaking, DChainBase {
   /// -----------------------------------
   /// --------- Update Function ---------
   /// -----------------------------------
+
+  function setBlacklist(
+    IDGWBlacklist _blacklist
+  ) external onlyRole(SUB_ADMIN_ROLE) {
+    blacklist = _blacklist;
+  }
 
   function setRoot(address _root) external onlyAdmin {
     root = _root;
@@ -399,6 +406,13 @@ contract DGWStaking is IDChainStaking, DChainBase {
   }
 
   function claimReward(uint _contractId) public nonReentrant whenNotPaused {
+    if (address(blacklist) != address(0)) {
+      require(
+        !blacklist.blacklisted(_msgSender()),
+        "pool: user is blacklisted"
+      );
+    }
+
     _harvest(_msgSender(), _contractId);
   }
 

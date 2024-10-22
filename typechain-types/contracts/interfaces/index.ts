@@ -8,6 +8,7 @@ export type { pancake };
 export type { IDChainStaking } from "./IDChainStaking";
 export type { IDDXStaking } from "./IDDXStaking";
 export type { IDDXVault } from "./IDDXVault";
+export type { IDGWBlacklist } from "./IDGWBlacklist";
 export type { IEACAggregatorProxy } from "./IEACAggregatorProxy";
 export type { IERC173 } from "./IERC173";
 export type { IKeeperCompatible } from "./IKeeperCompatible";
