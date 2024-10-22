@@ -14,6 +14,7 @@ describe('Staking', async () => {
         const CONTRACT_OWNER_ADDRESS = "0x0728bebA33844A83675E402639CfdDDB099E6FC5";
 
         const INVESTOR_1_ADDRESS = "0xD6d5482233622F6EFB8d86967638E9325dE23387";
+        const INVESTOR_2_ADDRESS = "0xA0a8A01307d36b98E5f8a9a1D6B3a5EBDBD00335";
 
         const proxyAdmin = await ethers.getContractAt("ProxyAdmin", "0xA0c6063A229D8628916EC25689A23Ed191D49bDd");
         const oldDWVault = await ethers.getContractAt("DGWVault", DW_VAULT_ADDRESS);
@@ -22,6 +23,7 @@ describe('Staking', async () => {
         console.log(await oldDWVault.vestingSchedules(INVESTOR_1_ADDRESS));
 
         const impersonatedInvestor1 = await ethers.getImpersonatedSigner(INVESTOR_1_ADDRESS);
+        const impersonatedInvestor2 = await ethers.getImpersonatedSigner(INVESTOR_2_ADDRESS);
 
         const impersonatedContractOwnerSigner = await ethers.getImpersonatedSigner(MULTI_SIG_ADDRESS);
         const impersonatedSubAdmin = await ethers.getImpersonatedSigner(SUB_ADMIN_ADDRESS);
@@ -32,6 +34,7 @@ describe('Staking', async () => {
         await setBalance(MULTI_SIG_ADDRESS, 100n ** 18n);
         await setBalance(SUB_ADMIN_ADDRESS, 100n ** 18n);
         await setBalance(INVESTOR_1_ADDRESS, 100n ** 18n);
+        await setBalance(INVESTOR_2_ADDRESS, 100n ** 18n);
 
         // expect(await oldDWVault.connect(impersonatedInvestor1).stakeWithVault(0, "301379999999999996987", "0x0000000000000000000000000000000000000000")).to.be.rejectedWith("pool: not allow to stake using locked balance");
 
@@ -45,9 +48,11 @@ describe('Staking', async () => {
 
         await dwVault.connect(impersonatedSubAdmin).setAllowToStakeUsingLockedBalance(true);
         await dwVault.connect(impersonatedInvestor1).stakeWithVault(0, "301379999999999996987", "0x0000000000000000000000000000000000000000");
+        await dwVault.connect(impersonatedInvestor2).stakeWithVault(0, "26308892567999999736911", "0x0000000000000000000000000000000000000000");
 
         const details = await dwStaking.stakingContracts(1045);
-        console.log("details: ", details);
+
+        console.log("details: ", details, await dwStaking.stakingContracts(1046));
         //
         //
         //

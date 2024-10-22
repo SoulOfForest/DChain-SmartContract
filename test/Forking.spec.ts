@@ -80,10 +80,7 @@ describe('Staking', async () => {
 
         await expect(dwBlacklist.connect(impersonatedContractOwner).addToBlacklist(impersonatedInvestor1.address)).to.be.rejectedWith("blacklist: user is blacklisted");
 
-        await dwBlacklist.connect(impersonatedContractOwner).addToBlacklist(impersonatedInvestor2.address);
-
-        await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
-        await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
+        console.log("zxc: ", await dwStaking.connect(impersonatedInvestor2).getAllPendingRewards([314]));
 
         //
         //
