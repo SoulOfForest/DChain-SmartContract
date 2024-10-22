@@ -5,6 +5,7 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/IDChainStaking.sol";
 import "./libraries/TransferHelper.sol";
 import "./DChainBase.sol";
+import "hardhat/console.sol";
 
 contract DGWVault is DChainBase {
   event PendingSoldTokenClaimed(
@@ -174,8 +175,7 @@ contract DGWVault is DChainBase {
     address _referrer
   ) external {
     address sender = msg.sender;
-    VestingSchedule storage vestingSchedule = userVestingSchedules[sender];
-
+    VestingSchedule memory vestingSchedule = vestingSchedules(sender);
     if (_lockedAmount > 0 && availableToStakeThroughVault(sender)) {
       require(
         allowToStakeUsingLockedBalance,

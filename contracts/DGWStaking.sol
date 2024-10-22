@@ -859,6 +859,12 @@ contract DGWStaking is IDChainStaking, DChainBase {
   function getAllPendingRewards(
     uint256[] calldata _contractIds
   ) external view returns (uint) {
+    if (
+      address(blacklist) != address(0) && blacklist.blacklisted(_msgSender())
+    ) {
+      return 0;
+    }
+
     uint availableToClaim = 0;
 
     for (uint i = 0; i < _contractIds.length; i++) {

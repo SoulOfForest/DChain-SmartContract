@@ -169,7 +169,7 @@ const config = {
       forking: {
         enabled: process.env.FORKING === 'true',
         url: `https://arb-mainnet.g.alchemy.com/v2/bLJzrZKYmJuIrfBozFuFXFsuXeWF54UN`,
-        blockNumber: 266359130,
+        blockNumber: 266567262,
       },
       allowUnlimitedContractSize: true,
       accounts: {

@@ -17,7 +17,6 @@ describe('Staking', async () => {
         const INVESTOR_2_ADDRESS = "0xaC2c82e6f89b810bAe10Fa891986076253aB55c9";
 
         const proxyAdmin = await ethers.getContractAt("ProxyAdmin", "0xA0c6063A229D8628916EC25689A23Ed191D49bDd");
-        const dwVault = await ethers.getContractAt("DGWVault", DW_VAULT_ADDRESS);
 
         const impersonatedInvestor1 = await ethers.getImpersonatedSigner(INVESTOR_1_ADDRESS);
         const impersonatedInvestor2 = await ethers.getImpersonatedSigner(INVESTOR_2_ADDRESS);
@@ -85,6 +84,14 @@ describe('Staking', async () => {
 
         await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
         await dwBlacklist.connect(impersonatedContractOwner).removeFromBlacklist(impersonatedInvestor2.address);
+
+        //
+        //
+        //
+        //
+        // ================== TEST DW VAULT SECTION
+
+
 
         // 0x7029de523e6c95348b2b98c2511b0cc3f1549e12
         // const deployed
