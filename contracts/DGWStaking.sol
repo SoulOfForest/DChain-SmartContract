@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { IERC20WithBurn } from "./interfaces/IERC20.sol";
 import "./interfaces/IOracleSimple.sol";
@@ -15,6 +16,7 @@ import "hardhat/console.sol";
 contract DGWStaking is IDChainStaking, DChainBase {
   using SafeERC20 for IERC20WithBurn;
 
+  using EnumerableSet for EnumerableSet.AddressSet;
   struct StakingInfo {
     uint256 totalExpectedInterest;
     uint256 totalStakesInUSD;
@@ -91,6 +93,8 @@ contract DGWStaking is IDChainStaking, DChainBase {
   mapping(address => uint) public ddxRewardDistributionCount;
 
   uint public maximumDDXRewardDistributionCount;
+
+  EnumerableSet.AddressSet private blacklist;
 
   event ComissionDirectBonus(
     address indexed user,
@@ -170,6 +174,38 @@ contract DGWStaking is IDChainStaking, DChainBase {
   /// -----------------------------------
   /// --------- Update Function ---------
   /// -----------------------------------
+
+  function queryBlackListPagination(
+    uint page,
+    uint maxItemsPerPage
+  ) public view returns (address[] memory blacklisted) {
+    blacklisted = new address[](maxItemsPerPage);
+    uint startIndex = page * maxItemsPerPage;
+
+    for (uint i = startIndex; i < maxItemsPerPage; ) {
+      address blacklistedUser = blacklist.at(i);
+
+      if (blacklistedUser == address(0)) {
+        break;
+      }
+
+      blacklisted[i] = blacklistedUser;
+
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  function addToBlacklist(address _user) external onlyRole(SUB_ADMIN_ROLE) {
+    blacklist.add(_user);
+  }
+
+  function removeFromBlacklist(
+    address _user
+  ) external onlyRole(SUB_ADMIN_ROLE) {
+    blacklist.remove(_user);
+  }
 
   function setRoot(address _root) external onlyAdmin {
     root = _root;
