@@ -38,7 +38,6 @@ const FUND_RECEIVER_IDO = process.env.FUND_RECEIVER;
 const OWNER_ADDRESS = process.env.OWNER_ADDRESS || DEPLOYER_PRIVATE_KEY;
 
 const accounts = [DEPLOYER_PRIVATE_KEY as string];
-
 const config = {
   sourcify: {
     // Disabled by default
@@ -169,13 +168,14 @@ const config = {
       hardfork: process.env.CODE_COVERAGE ? 'berlin' : 'london',
       forking: {
         enabled: process.env.FORKING === 'true',
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 18454285,
+        url: `https://arb-mainnet.g.alchemy.com/v2/bLJzrZKYmJuIrfBozFuFXFsuXeWF54UN`,
+        blockNumber: 266359130,
       },
       allowUnlimitedContractSize: true,
       accounts: {
         count: 30,
       },
+      // blockConfirmations: 0,
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,

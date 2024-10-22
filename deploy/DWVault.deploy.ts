@@ -16,11 +16,11 @@ const deployDWVault: DeployFunction = async (hre: HardhatRuntimeEnvironment) => 
     const { deploy } = deployments;
     const { deployer, ido, owner, fundReceiver } = await getNamedAccounts();
 
-    const dwStakingAddress = (
-        await deployments.get('DGWStaking_Proxy')
-    ).address;
+    // const dwStakingAddress = (
+    //     await deployments.get('DGWStaking_Proxy')
+    // ).address;
 
-    const dwTokenAddress = process.env.DW_ADDRESS;
+    // const dwTokenAddress = process.env.DW_ADDRESS;
 
     const { address: dwVaultAddress } = await deploy('DGWVault', {
         from: deployer,
@@ -47,6 +47,6 @@ const deployDWVault: DeployFunction = async (hre: HardhatRuntimeEnvironment) => 
 };
 
 deployDWVault.tags = ['DW_VAULT'];
-deployDWVault.dependencies = ['DW_STAKING'];
+// deployDWVault.dependencies = ['DW_STAKING'];
 
 export default deployDWVault;

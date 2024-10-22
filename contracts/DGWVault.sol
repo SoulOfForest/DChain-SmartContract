@@ -5,7 +5,6 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/IDChainStaking.sol";
 import "./libraries/TransferHelper.sol";
 import "./DChainBase.sol";
-import "hardhat/console.sol";
 
 contract DGWVault is DChainBase {
   event PendingSoldTokenClaimed(

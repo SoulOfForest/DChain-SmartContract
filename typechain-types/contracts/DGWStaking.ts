@@ -78,6 +78,8 @@ export interface DGWStakingInterface extends utils.Interface {
     "admin()": FunctionFragment;
     "allowedStakeTokens(address)": FunctionFragment;
     "assetPrices(address)": FunctionFragment;
+    "assetPricesWithChainLink(address)": FunctionFragment;
+    "assetPricesWithUniV3PoolCompatible(address)": FunctionFragment;
     "claimDuration()": FunctionFragment;
     "claimMultipleRewards(uint256[])": FunctionFragment;
     "claimReward(uint256)": FunctionFragment;
@@ -90,13 +92,17 @@ export interface DGWStakingInterface extends utils.Interface {
     "directBonusRefreshExecuted(address)": FunctionFragment;
     "directInterest()": FunctionFragment;
     "emergencyCancelled()": FunctionFragment;
+    "extraRewardBonusPercentage()": FunctionFragment;
     "extraRewardToken()": FunctionFragment;
     "fundReceiver()": FunctionFragment;
     "getAllPendingRewards(uint256[])": FunctionFragment;
     "getAmountDWByUSD(uint256)": FunctionFragment;
     "getAmountDWByUSDStatic(uint256)": FunctionFragment;
+    "getAmountDWByUSDWithoutOracle(uint256)": FunctionFragment;
     "getAmountUSDByToken(address,uint256)": FunctionFragment;
     "getAmountUSDByTokenStatic(address,uint256)": FunctionFragment;
+    "getAmountUSDByTokenUsingUniswapOracle(address,uint256)": FunctionFragment;
+    "getAmountUSDByTokenWithoutV2Oracle(address,uint256)": FunctionFragment;
     "getMultipleContractInfos(uint256[])": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getStakingAmountByPegToken(address,uint256)": FunctionFragment;
@@ -120,11 +126,14 @@ export interface DGWStakingInterface extends utils.Interface {
     "root()": FunctionFragment;
     "setAllowedStakeToken(address)": FunctionFragment;
     "setAssetOracle(address,address)": FunctionFragment;
+    "setAssetUniV3PoolCompatible(address,address)": FunctionFragment;
+    "setChainLinkAssetOracle(address,address)": FunctionFragment;
     "setClaimDuration(uint64)": FunctionFragment;
     "setDDXStaking(address)": FunctionFragment;
     "setDDXVault(address)": FunctionFragment;
     "setDWVault(address)": FunctionFragment;
     "setDirectInterest(uint256)": FunctionFragment;
+    "setExtraRewardBonusPercentage(uint256)": FunctionFragment;
     "setFundReceiver(address)": FunctionFragment;
     "setMaximumDDXRewardDistribution(uint256)": FunctionFragment;
     "setMinimumStakingInUSD(uint256)": FunctionFragment;
@@ -153,6 +162,8 @@ export interface DGWStakingInterface extends utils.Interface {
       | "admin"
       | "allowedStakeTokens"
       | "assetPrices"
+      | "assetPricesWithChainLink"
+      | "assetPricesWithUniV3PoolCompatible"
       | "claimDuration"
       | "claimMultipleRewards"
       | "claimReward"
@@ -165,13 +176,17 @@ export interface DGWStakingInterface extends utils.Interface {
       | "directBonusRefreshExecuted"
       | "directInterest"
       | "emergencyCancelled"
+      | "extraRewardBonusPercentage"
       | "extraRewardToken"
       | "fundReceiver"
       | "getAllPendingRewards"
       | "getAmountDWByUSD"
       | "getAmountDWByUSDStatic"
+      | "getAmountDWByUSDWithoutOracle"
       | "getAmountUSDByToken"
       | "getAmountUSDByTokenStatic"
+      | "getAmountUSDByTokenUsingUniswapOracle"
+      | "getAmountUSDByTokenWithoutV2Oracle"
       | "getMultipleContractInfos"
       | "getRoleAdmin"
       | "getStakingAmountByPegToken"
@@ -195,11 +210,14 @@ export interface DGWStakingInterface extends utils.Interface {
       | "root"
       | "setAllowedStakeToken"
       | "setAssetOracle"
+      | "setAssetUniV3PoolCompatible"
+      | "setChainLinkAssetOracle"
       | "setClaimDuration"
       | "setDDXStaking"
       | "setDDXVault"
       | "setDWVault"
       | "setDirectInterest"
+      | "setExtraRewardBonusPercentage"
       | "setFundReceiver"
       | "setMaximumDDXRewardDistribution"
       | "setMinimumStakingInUSD"
@@ -248,6 +266,14 @@ export interface DGWStakingInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "assetPrices",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "assetPricesWithChainLink",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "assetPricesWithUniV3PoolCompatible",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -308,6 +334,10 @@ export interface DGWStakingInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "extraRewardBonusPercentage",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "extraRewardToken",
     values?: undefined
   ): string;
@@ -328,11 +358,23 @@ export interface DGWStakingInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "getAmountDWByUSDWithoutOracle",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getAmountUSDByToken",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getAmountUSDByTokenStatic",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAmountUSDByTokenUsingUniswapOracle",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAmountUSDByTokenWithoutV2Oracle",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -422,6 +464,14 @@ export interface DGWStakingInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setAssetUniV3PoolCompatible",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setChainLinkAssetOracle",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setClaimDuration",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -439,6 +489,10 @@ export interface DGWStakingInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setDirectInterest",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setExtraRewardBonusPercentage",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -522,6 +576,14 @@ export interface DGWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "assetPricesWithChainLink",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "assetPricesWithUniV3PoolCompatible",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "claimDuration",
     data: BytesLike
   ): Result;
@@ -567,6 +629,10 @@ export interface DGWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "extraRewardBonusPercentage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "extraRewardToken",
     data: BytesLike
   ): Result;
@@ -587,11 +653,23 @@ export interface DGWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getAmountDWByUSDWithoutOracle",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getAmountUSDByToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAmountUSDByTokenStatic",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountUSDByTokenUsingUniswapOracle",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountUSDByTokenWithoutV2Oracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -660,6 +738,14 @@ export interface DGWStakingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setAssetUniV3PoolCompatible",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setChainLinkAssetOracle",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setClaimDuration",
     data: BytesLike
   ): Result;
@@ -674,6 +760,10 @@ export interface DGWStakingInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setDWVault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setDirectInterest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setExtraRewardBonusPercentage",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -954,6 +1044,16 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    assetPricesWithChainLink(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    assetPricesWithUniV3PoolCompatible(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     claimDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     claimMultipleRewards(
@@ -1010,6 +1110,8 @@ export interface DGWStaking extends BaseContract {
 
     emergencyCancelled(overrides?: CallOverrides): Promise<[boolean]>;
 
+    extraRewardBonusPercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     extraRewardToken(overrides?: CallOverrides): Promise<[string]>;
 
     fundReceiver(overrides?: CallOverrides): Promise<[string]>;
@@ -1029,6 +1131,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getAmountDWByUSDWithoutOracle(
+      _amountInUSD: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getAmountUSDByToken(
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
@@ -1040,6 +1147,18 @@ export interface DGWStaking extends BaseContract {
       _stakingAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    getAmountUSDByTokenUsingUniswapOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getAmountUSDByTokenWithoutV2Oracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getMultipleContractInfos(
       _contractIds: PromiseOrValue<BigNumberish>[],
@@ -1149,6 +1268,18 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setAssetUniV3PoolCompatible(
+      _stakeToken: PromiseOrValue<string>,
+      _pool: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setChainLinkAssetOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _oracle: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setClaimDuration(
       _claimDuration: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1171,6 +1302,11 @@ export interface DGWStaking extends BaseContract {
 
     setDirectInterest(
       _directInterest: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setExtraRewardBonusPercentage(
+      _extraRewardBonusPercentage: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1287,6 +1423,16 @@ export interface DGWStaking extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  assetPricesWithChainLink(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  assetPricesWithUniV3PoolCompatible(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   claimDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
   claimMultipleRewards(
@@ -1343,6 +1489,8 @@ export interface DGWStaking extends BaseContract {
 
   emergencyCancelled(overrides?: CallOverrides): Promise<boolean>;
 
+  extraRewardBonusPercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
   extraRewardToken(overrides?: CallOverrides): Promise<string>;
 
   fundReceiver(overrides?: CallOverrides): Promise<string>;
@@ -1362,6 +1510,11 @@ export interface DGWStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getAmountDWByUSDWithoutOracle(
+    _amountInUSD: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getAmountUSDByToken(
     _stakeToken: PromiseOrValue<string>,
     _stakingAmount: PromiseOrValue<BigNumberish>,
@@ -1373,6 +1526,18 @@ export interface DGWStaking extends BaseContract {
     _stakingAmount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  getAmountUSDByTokenUsingUniswapOracle(
+    _stakeToken: PromiseOrValue<string>,
+    _stakingAmount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getAmountUSDByTokenWithoutV2Oracle(
+    _stakeToken: PromiseOrValue<string>,
+    _stakingAmount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getMultipleContractInfos(
     _contractIds: PromiseOrValue<BigNumberish>[],
@@ -1480,6 +1645,18 @@ export interface DGWStaking extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setAssetUniV3PoolCompatible(
+    _stakeToken: PromiseOrValue<string>,
+    _pool: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setChainLinkAssetOracle(
+    _stakeToken: PromiseOrValue<string>,
+    _oracle: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setClaimDuration(
     _claimDuration: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1502,6 +1679,11 @@ export interface DGWStaking extends BaseContract {
 
   setDirectInterest(
     _directInterest: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setExtraRewardBonusPercentage(
+    _extraRewardBonusPercentage: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1618,6 +1800,16 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    assetPricesWithChainLink(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    assetPricesWithUniV3PoolCompatible(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     claimDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimMultipleRewards(
@@ -1674,6 +1866,8 @@ export interface DGWStaking extends BaseContract {
 
     emergencyCancelled(overrides?: CallOverrides): Promise<boolean>;
 
+    extraRewardBonusPercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
     extraRewardToken(overrides?: CallOverrides): Promise<string>;
 
     fundReceiver(overrides?: CallOverrides): Promise<string>;
@@ -1693,6 +1887,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAmountDWByUSDWithoutOracle(
+      _amountInUSD: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAmountUSDByToken(
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
@@ -1700,6 +1899,18 @@ export interface DGWStaking extends BaseContract {
     ): Promise<BigNumber>;
 
     getAmountUSDByTokenStatic(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAmountUSDByTokenUsingUniswapOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAmountUSDByTokenWithoutV2Oracle(
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1811,6 +2022,18 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setAssetUniV3PoolCompatible(
+      _stakeToken: PromiseOrValue<string>,
+      _pool: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setChainLinkAssetOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _oracle: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setClaimDuration(
       _claimDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1833,6 +2056,11 @@ export interface DGWStaking extends BaseContract {
 
     setDirectInterest(
       _directInterest: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setExtraRewardBonusPercentage(
+      _extraRewardBonusPercentage: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2072,6 +2300,16 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    assetPricesWithChainLink(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    assetPricesWithUniV3PoolCompatible(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     claimDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimMultipleRewards(
@@ -2128,6 +2366,8 @@ export interface DGWStaking extends BaseContract {
 
     emergencyCancelled(overrides?: CallOverrides): Promise<BigNumber>;
 
+    extraRewardBonusPercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
     extraRewardToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     fundReceiver(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2147,6 +2387,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getAmountDWByUSDWithoutOracle(
+      _amountInUSD: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAmountUSDByToken(
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
@@ -2157,6 +2402,18 @@ export interface DGWStaking extends BaseContract {
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getAmountUSDByTokenUsingUniswapOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAmountUSDByTokenWithoutV2Oracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getMultipleContractInfos(
@@ -2265,6 +2522,18 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setAssetUniV3PoolCompatible(
+      _stakeToken: PromiseOrValue<string>,
+      _pool: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setChainLinkAssetOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _oracle: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setClaimDuration(
       _claimDuration: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -2287,6 +2556,11 @@ export interface DGWStaking extends BaseContract {
 
     setDirectInterest(
       _directInterest: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setExtraRewardBonusPercentage(
+      _extraRewardBonusPercentage: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2382,6 +2656,16 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    assetPricesWithChainLink(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    assetPricesWithUniV3PoolCompatible(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     claimDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claimMultipleRewards(
@@ -2440,6 +2724,10 @@ export interface DGWStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    extraRewardBonusPercentage(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     extraRewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     fundReceiver(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2459,6 +2747,11 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    getAmountDWByUSDWithoutOracle(
+      _amountInUSD: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getAmountUSDByToken(
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
@@ -2469,6 +2762,18 @@ export interface DGWStaking extends BaseContract {
       _stakeToken: PromiseOrValue<string>,
       _stakingAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getAmountUSDByTokenUsingUniswapOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAmountUSDByTokenWithoutV2Oracle(
+      _stakeToken: PromiseOrValue<string>,
+      _stakingAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getMultipleContractInfos(
@@ -2581,6 +2886,18 @@ export interface DGWStaking extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setAssetUniV3PoolCompatible(
+      _stakeToken: PromiseOrValue<string>,
+      _pool: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setChainLinkAssetOracle(
+      _stakeToken: PromiseOrValue<string>,
+      _oracle: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setClaimDuration(
       _claimDuration: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -2603,6 +2920,11 @@ export interface DGWStaking extends BaseContract {
 
     setDirectInterest(
       _directInterest: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setExtraRewardBonusPercentage(
+      _extraRewardBonusPercentage: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

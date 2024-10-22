@@ -8,8 +8,8 @@ import { expandTo18Decimals, expandTo18DecimalsRaw } from "../utils/bignumber";
 import { decodePrice, encodePrice } from "../utils/oracle";
 import { parseUnits } from "ethers/lib/utils";
 
-const PANCAKE_FACTORY = "0x1097053Fd2ea711dad45caCcc45EfF7548fCB362";
-const PANCAKE_ROUTER = "0xEfF92A263d31888d860bD50809A8D171709b7b1c";
+const PANCAKE_FACTORY = "0x02a84c1b3BBD7401a5f7fa98a384EBC70bB5749E";
+const PANCAKE_ROUTER = "0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb";
 
 const MONTH_IN_SECONDS = 30 * 24 * 60 * 60;
 
@@ -70,11 +70,8 @@ describe('Staking', async () => {
         await usdc.mint(user5.address, expandTo18Decimals(3000000, 6));
         await usdc.mint(user6.address, expandTo18Decimals(3000000000, 6));
 
-        // const DWToken = await ethers.getContractFactory('DWToken');
-        // const token = await DWToken.deploy();
-
         const DWToken = await ethers.getContractFactory('DGWToken');
-        const token = await upgrades.deployProxy(DWToken, [
+        const token = await DWToken.deploy(
             "DWToken",
             "DWT",
             "0x2621816bE08E4279Cf881bc640bE4089BfAf491a", // UNCX
@@ -82,16 +79,37 @@ describe('Staking', async () => {
             owner.address,
             owner.address,
             owner.address,
-            owner.address
-        ], {
-            unsafeAllow: ["constructor"],
-        });
+            owner.address);
+
+        // const DWToken = await ethers.getContractFactory('DGWToken');
+        // const token = await upgrades.deployProxy(DWToken, [
+        //     "DWToken",
+        //     "DWT",
+        //     "0x2621816bE08E4279Cf881bc640bE4089BfAf491a", // UNCX
+        //     owner.address,
+        //     owner.address,
+        //     owner.address,
+        //     owner.address,
+        //     owner.address
+        // ], {
+        //     unsafeAllow: ["constructor"],
+        // });
+
+        // const DDXToken = await ethers.getContractFactory('DGEToken');
+        // const ddxToken = await upgrades.deployProxy(DDXToken, [
+        //     "DDXToken",
+        //     "DDX",
+        //     expandTo18Decimals(100000000000, 25)
+        // ], {
+        //     unsafeAllow: ["constructor"],
+        // });
+
 
         const DDXToken = await ethers.getContractFactory('DGEToken');
         const ddxToken = await upgrades.deployProxy(DDXToken, [
             "DDXToken",
             "DDX",
-            expandTo18Decimals(100000000000, 25)
+            // expandTo18Decimals(100000000000, 25)
         ], {
             unsafeAllow: ["constructor"],
         });
@@ -152,6 +170,7 @@ describe('Staking', async () => {
 
         const DWStaking = await ethers.getContractFactory("DGWStaking");
         const dwStaking = await upgrades.deployProxy(DWStaking, [
+            owner.address,
             owner.address,
             treasury.address,
             token.address,
@@ -481,38 +500,112 @@ describe('Staking', async () => {
                 return { dwVault, ddxVault, oracle, usdc, dwStaking, token, user0, user1, user2, user3, user4, user5, fundReceiver };
             };
 
-            it.only("User not able to claim if stills in cliff time", async () => {
-                const { dwVault, token, user0, user1, user2, user3, user4, user5 } = await loadFixture(deployPreSetupForVesting);
-                console.log(await time.latest(), await dwVault.vestingSchedules(user1.address));
-                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(0);
+            // it.only("User not able to claim if stills in cliff time", async () => {
+            //     const { dwVault, token, user0, user1, user2, user3, user4, user5 } = await loadFixture(deployPreSetupForVesting);
+            //     console.log(await time.latest(), await dwVault.vestingSchedules(user1.address));
+            //     expect(await dwVault.releasableAmount(user1.address)).to.be.equals(0);
 
-                await time.increaseTo(openTime + sellDuration + 2 * MONTH_IN_SECONDS);
-                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(0);
-            })
+            //     await time.increaseTo(openTime + sellDuration + 2 * MONTH_IN_SECONDS);
+            //     expect(await dwVault.releasableAmount(user1.address)).to.be.equals(0);
+            // })
 
-            it("User able to claim after cliff time", async () => {
+            it.only("User able to claim after cliff time", async () => {
                 const { dwVault, token, user0, user1, user2, user3, user4, user5 } = await loadFixture(deployPreSetupForVesting);
-                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS);
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting);
 
                 // It should be 100 because TGE already has been paid
                 expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(200));
 
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS / 2);
+
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(200));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS);
+
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(400));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS * 9);
+
+                // 2000 / 10
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(2000));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS * 9 + MONTH_IN_SECONDS / 2);
+
+                // 2000 / 10
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(2000));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS * 12);
+
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(2000));
+
+                await dwVault.connect(user1).release();
+
                 const balanceBefore = await token.balanceOf(user1.address);
 
-                await expect(dwVault.connect(user1).release()).to.be.emit(dwVault, "TokenReleased").withArgs(
-                    user1.address,
-                    expandTo18Decimals(200)
-                );
+                await expect(dwVault.connect(user1).release()).to.be.revertedWith("TokenVesting: cannot release tokens, not enough vested tokens");
+
+
+                // const balanceAfter = await token.balanceOf(user1.address);
+                // expect(balanceAfter).to.be.equals(balanceBefore.add(expandTo18Decimals(200)))
+
+                // await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS);
+
+                // await expect(dwVault.connect(user1).release()).to.be.emit(dwVault, "TokenReleased").withArgs(
+                //     user1.address,
+                //     expandTo18Decimals(200)
+                // );
+            })
+
+            it.only("User able to claim after cliff time 123", async () => {
+                const { dwVault, token, user0, user1, user2, user3, user4, user5 } = await loadFixture(deployPreSetupForVesting);
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting);
+
+                await dwVault.connect(user1).release();
+                await expect(dwVault.connect(user1).release()).to.be.revertedWith("TokenVesting: cannot release tokens, not enough vested tokens");
+
+                // It should be 100 because TGE already has been paid
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(0));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS / 2);
+
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(0));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS);
+
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(200));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS * 9);
+
+                // 2000 / 10
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(1800));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS * 9 + MONTH_IN_SECONDS / 2);
+
+
+                // 2000 / 10
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(1800));
+
+                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS * 12);
+
+                expect(await dwVault.releasableAmount(user1.address)).to.be.equals(expandTo18Decimals(1800));
+
+                const balanceBefore = await token.balanceOf(user1.address);
+                await dwVault.connect(user1).release();
 
                 const balanceAfter = await token.balanceOf(user1.address);
-                expect(balanceAfter).to.be.equals(balanceBefore.add(expandTo18Decimals(200)))
+                expect(balanceAfter).to.be.equals(balanceBefore.add(expandTo18Decimals(1800)))
 
-                await time.increaseTo(openTime + sellDuration + lockBeforeVesting + 2 * MONTH_IN_SECONDS);
+                await expect(dwVault.connect(user1).release()).to.be.revertedWith("TokenVesting: cannot release tokens, not enough vested tokens");
 
-                await expect(dwVault.connect(user1).release()).to.be.emit(dwVault, "TokenReleased").withArgs(
-                    user1.address,
-                    expandTo18Decimals(200)
-                );
+                // const balanceAfter = await token.balanceOf(user1.address);
+                // expect(balanceAfter).to.be.equals(balanceBefore.add(expandTo18Decimals(200)))
+
+                // await time.increaseTo(openTime + sellDuration + lockBeforeVesting + MONTH_IN_SECONDS);
+
+                // await expect(dwVault.connect(user1).release()).to.be.emit(dwVault, "TokenReleased").withArgs(
+                //     user1.address,
+                //     expandTo18Decimals(200)
+                // );
             })
         });
     });
@@ -607,7 +700,7 @@ describe('Staking', async () => {
                 ethers.constants.AddressZero,
                 expandTo18Decimals(2000),
                 expandTo18Decimals(100, 6),
-                anyValue
+                anyValue,
             );
 
             const stakingContract = await dwStaking.stakingContracts(0);

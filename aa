@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { IERC20WithBurn } from "./interfaces/IERC20.sol";
 import "./interfaces/IOracleSimple.sol";
@@ -8,16 +9,14 @@ import "./interfaces/IDChainStaking.sol";
 import "./interfaces/IDDXVault.sol";
 import "./interfaces/IDDXStaking.sol";
 import "./interfaces/IDWVault.sol";
-import "./interfaces/IEACAggregatorProxy.sol";
 import "./DChainBase.sol";
 import "./libraries/TransferHelper.sol";
-
-import "./libraries/OracleLibrary.sol";
-import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
+import "hardhat/console.sol";
 
 contract DGWStaking is IDChainStaking, DChainBase {
   using SafeERC20 for IERC20WithBurn;
 
+  using EnumerableSet for EnumerableSet.AddressSet;
   struct StakingInfo {
     uint256 totalExpectedInterest;
     uint256 totalStakesInUSD;
@@ -94,12 +93,8 @@ contract DGWStaking is IDChainStaking, DChainBase {
   mapping(address => uint) public ddxRewardDistributionCount;
 
   uint public maximumDDXRewardDistributionCount;
-  uint public extraRewardBonusPercentage;
 
-  // Asset token => (chainlink supports)
-  mapping(address => address) public assetPricesWithChainLink;
-
-  mapping(address => address) public assetPricesWithUniV3PoolCompatible;
+  EnumerableSet.AddressSet private blacklist;
 
   event ComissionDirectBonus(
     address indexed user,
@@ -180,28 +175,57 @@ contract DGWStaking is IDChainStaking, DChainBase {
   /// --------- Update Function ---------
   /// -----------------------------------
 
+  function queryBlackListPagination(
+    uint page,
+    uint maxItemsPerPage
+  ) public view returns (address[] memory blacklisted) {
+    blacklisted = new address[](maxItemsPerPage);
+    uint startIndex = page * maxItemsPerPage;
+    uint lastItem = page * maxItemsPerPage + maxItemsPerPage;
+
+    for (uint i = startIndex; i < lastItem; ) {
+      address blacklistedUser = blacklist.at(i);
+
+      if (blacklistedUser == address(0)) {
+        break;
+      }
+
+      blacklisted[i] = blacklistedUser;
+
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  function getBlackListUserByIndexaaaa() external view returns (uint) {
+    return blacklist.length();
+  }
+
+  function getBlackListUserByIndex(uint _index) external returns (address) {
+    address[] memory gg = blacklist.values();
+    // console.log("blacklist.at(_index)", blacklist.at(1));
+    console.log("len", gg.length);
+    return blacklist.at(_index);
+  }
+
+  function blacklisted(address _user) external view returns (bool) {
+    return blacklist.contains(_user);
+  }
+
+  function addToBlacklist(address _user) external onlyRole(SUB_ADMIN_ROLE) {
+    blacklist.add(_user);
+    console.log("len", blacklist.length());
+  }
+
+  function removeFromBlacklist(
+    address _user
+  ) external onlyRole(SUB_ADMIN_ROLE) {
+    blacklist.remove(_user);
+  }
+
   function setRoot(address _root) external onlyAdmin {
     root = _root;
-  }
-
-  function setAssetUniV3PoolCompatible(
-    address _stakeToken,
-    address _pool
-  ) external onlyRole(SUB_ADMIN_ROLE) {
-    assetPricesWithUniV3PoolCompatible[_stakeToken] = _pool;
-  }
-
-  function setChainLinkAssetOracle(
-    address _stakeToken,
-    address _oracle
-  ) external onlyRole(SUB_ADMIN_ROLE) {
-    assetPricesWithChainLink[_stakeToken] = _oracle;
-  }
-
-  function setExtraRewardBonusPercentage(
-    uint256 _extraRewardBonusPercentage
-  ) external onlyRole(SUB_ADMIN_ROLE) {
-    extraRewardBonusPercentage = _extraRewardBonusPercentage;
   }
 
   function setMaximumDDXRewardDistribution(
@@ -470,33 +494,10 @@ contract DGWStaking is IDChainStaking, DChainBase {
     uint256 _stakingAmount
   ) internal returns (uint256 totalStakingAmountInUSD) {
     address oracle = assetPrices[_stakeToken];
-    address chainLinkOracle = assetPricesWithChainLink[_stakeToken];
-    address uniswapV3CompatiblePool = assetPricesWithUniV3PoolCompatible[
-      _stakeToken
-    ];
 
     uint256 amountOut;
 
-    if (chainLinkOracle != address(0)) {
-      int256 assetPrice = IEACAggregatorProxy(chainLinkOracle).latestAnswer();
-      uint256 decimals = (10 **
-        (IEACAggregatorProxy(chainLinkOracle).decimals() +
-          IERC20WithBurn(_stakeToken).decimals() -
-          6));
-      amountOut = (_stakingAmount * uint256(assetPrice)) / decimals;
-    }
-
-    if (
-      chainLinkOracle == address(0) && uniswapV3CompatiblePool != address(0)
-    ) {
-      amountOut = _calculatePriceUsingUniswapV3PoolOracle(
-        _stakeToken,
-        _stakingAmount,
-        false
-      );
-    }
-
-    if (chainLinkOracle == address(0) && oracle != address(0)) {
+    if (oracle != address(0)) {
       // Update oracle Pricing when time elapsed has passed
       if (
         block.timestamp - IOracleSimple(oracle).getBlockTimestampLast() >
@@ -532,33 +533,10 @@ contract DGWStaking is IDChainStaking, DChainBase {
     uint totalStakingAmountInUSD;
 
     address oracle = assetPrices[_stakeToken];
-    address chainLinkOracle = assetPricesWithChainLink[_stakeToken];
-    address uniswapV3CompatiblePool = assetPricesWithUniV3PoolCompatible[
-      _stakeToken
-    ];
 
     uint256 amountOut;
 
-    if (chainLinkOracle != address(0)) {
-      int256 assetPrice = IEACAggregatorProxy(chainLinkOracle).latestAnswer();
-      uint256 decimals = (10 **
-        (IEACAggregatorProxy(chainLinkOracle).decimals() +
-          IERC20WithBurn(_stakeToken).decimals() -
-          6));
-      amountOut = (_stakingAmount * uint256(assetPrice)) / decimals;
-    }
-
-    if (
-      chainLinkOracle == address(0) && uniswapV3CompatiblePool != address(0)
-    ) {
-      amountOut = _calculatePriceUsingUniswapV3PoolOracle(
-        address(rewardToken),
-        _stakingAmount,
-        false
-      );
-    }
-
-    if (chainLinkOracle == address(0) && oracle != address(0)) {
+    if (oracle != address(0)) {
       // Update oracle Pricing when time elapsed has passed
       if (
         block.timestamp - IOracleSimple(oracle).getBlockTimestampLast() >
@@ -583,89 +561,12 @@ contract DGWStaking is IDChainStaking, DChainBase {
     return totalStakingAmountInUSD;
   }
 
-  function _convertTokenToUSDWithoutV2Oracle(
-    address _stakeToken,
-    uint256 _stakingAmount
-  ) internal view returns (uint256) {
-    uint totalStakingAmountInUSD;
-
-    address chainLinkOracle = assetPricesWithChainLink[_stakeToken];
-    address uniswapV3CompatiblePool = assetPricesWithUniV3PoolCompatible[
-      _stakeToken
-    ];
-
-    uint256 amountOut;
-
-    if (chainLinkOracle != address(0)) {
-      int256 assetPrice = IEACAggregatorProxy(chainLinkOracle).latestAnswer();
-      uint256 decimals = (10 **
-        (IEACAggregatorProxy(chainLinkOracle).decimals() +
-          IERC20WithBurn(_stakeToken).decimals() -
-          6));
-      amountOut = (_stakingAmount * uint256(assetPrice)) / decimals;
-    }
-
-    if (
-      chainLinkOracle == address(0) && uniswapV3CompatiblePool != address(0)
-    ) {
-      amountOut = _calculatePriceUsingUniswapV3PoolOracle(
-        address(rewardToken),
-        _stakingAmount,
-        false
-      );
-    }
-
-    if (amountOut > 0) {
-      totalStakingAmountInUSD = amountOut;
-    } else {
-      // This case fallback to pre setup price
-      totalStakingAmountInUSD = getStakingAmountInUSD(
-        _stakeToken,
-        _stakingAmount
-      ); // Get amount in case we don't have an active oracle
-    }
-
-    return totalStakingAmountInUSD;
-  }
-
-  function _convertUSDToRewardTokenWithoutV2Oracle(
-    uint256 _amountInUSD
-  ) internal view returns (uint256) {
-    address uniswapV3CompatiblePool = assetPricesWithUniV3PoolCompatible[
-      address(rewardToken)
-    ];
-
-    if (uniswapV3CompatiblePool != address(0)) {
-      return
-        _calculatePriceUsingUniswapV3PoolOracle(
-          address(rewardToken),
-          _amountInUSD,
-          true
-        );
-    }
-
-    // Get amount in case we don't have an active oracle
-    return getStakingAmountByPegToken(address(rewardToken), _amountInUSD);
-  }
-
   function _convertUSDToRewardToken(
     uint256 _amountInUSD
   ) internal returns (uint256) {
     address oracle = assetPrices[address(rewardToken)];
-    address uniswapV3CompatiblePool = assetPricesWithUniV3PoolCompatible[
-      address(rewardToken)
-    ];
 
-    if (uniswapV3CompatiblePool != address(0)) {
-      return
-        _calculatePriceUsingUniswapV3PoolOracle(
-          address(rewardToken),
-          _amountInUSD,
-          true
-        );
-    }
-
-    if (uniswapV3CompatiblePool == address(0) && oracle != address(0)) {
+    if (oracle != address(0)) {
       // Update oracle Pricing when time elapsed has passed
       if (
         block.timestamp - IOracleSimple(oracle).getBlockTimestampLast() >
@@ -685,40 +586,6 @@ contract DGWStaking is IDChainStaking, DChainBase {
 
     // Get amount in case we don't have an active oracle
     return getStakingAmountByPegToken(address(rewardToken), _amountInUSD);
-  }
-
-  function _calculatePriceUsingUniswapV3PoolOracle(
-    address _token,
-    uint256 _originAmount,
-    bool _revert
-  ) internal view returns (uint256) {
-    address uniswapV3CompatiblePool = assetPricesWithUniV3PoolCompatible[
-      address(_token)
-    ];
-
-    if (uniswapV3CompatiblePool != address(0)) {
-      (int24 tick, ) = OracleLibrary.consult(uniswapV3CompatiblePool, 60); // 1 minute is good to go
-
-      address token0 = IUniswapV3Pool(uniswapV3CompatiblePool).token0();
-      address token1 = IUniswapV3Pool(uniswapV3CompatiblePool).token1();
-
-      address baseToken = _token == token0 ? token0 : token1;
-      address quoteToken = _token == token0 ? token1 : token0;
-
-      (baseToken, quoteToken) = _revert
-        ? (quoteToken, baseToken)
-        : (baseToken, quoteToken);
-
-      return
-        OracleLibrary.getQuoteAtTick(
-          tick,
-          uint128(_originAmount),
-          baseToken,
-          quoteToken
-        );
-    }
-
-    return 0;
   }
 
   function _convertUSDToExtraRewardToken(
@@ -754,36 +621,11 @@ contract DGWStaking is IDChainStaking, DChainBase {
     return _convertUSDToRewardToken(_amountInUSD);
   }
 
-  function getAmountDWByUSDWithoutOracle(
-    uint _amountInUSD
-  ) external view returns (uint) {
-    return _convertUSDToRewardTokenWithoutV2Oracle(_amountInUSD);
-  }
-
   function getAmountUSDByToken(
     address _stakeToken,
     uint256 _stakingAmount
   ) external override returns (uint) {
     return _convertTokenToUSD(_stakeToken, _stakingAmount);
-  }
-
-  function getAmountUSDByTokenWithoutV2Oracle(
-    address _stakeToken,
-    uint256 _stakingAmount
-  ) external view returns (uint) {
-    return _convertTokenToUSDWithoutV2Oracle(_stakeToken, _stakingAmount);
-  }
-
-  function getAmountUSDByTokenUsingUniswapOracle(
-    address _stakeToken,
-    uint256 _stakingAmount
-  ) external view returns (uint) {
-    return
-      _calculatePriceUsingUniswapV3PoolOracle(
-        _stakeToken,
-        _stakingAmount,
-        false
-      );
   }
 
   function getAmountDWByUSDStatic(uint _amountInUSD) external returns (uint) {
@@ -989,10 +831,7 @@ contract DGWStaking is IDChainStaking, DChainBase {
     }
 
     // Transfer extra DDX reward token to investor
-    uint extraRewardTokenAmount = DDXStaking.getAmountDDXByUSD(
-      (_amountOutInUSD * extraRewardBonusPercentage) /
-        INTEREST_RATE_PRECISION_POINT
-    );
+    uint extraRewardTokenAmount = DDXStaking.getAmountDDXByUSD(_amountOutInUSD);
     if (extraRewardTokenAmount > 0 && DDXVault.rewardApplicable()) {
       DDXVault.rewardFromDWStaking(_user, extraRewardTokenAmount);
       ddxRewardDistributionCount[_user] += 1;
