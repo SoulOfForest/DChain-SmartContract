@@ -9,32 +9,50 @@ contract DGWBlacklist is DChainBase {
 
   EnumerableSet.AddressSet private blacklist;
 
-  function initialize(address _owner) external initializer {
+  function initialize(address _owner, address _subAdmin) external initializer {
     __DChainBase_init(_owner);
     _setupRole(SUB_ADMIN_ROLE, _owner);
+    _setupRole(SUB_ADMIN_ROLE, _subAdmin);
+  }
+
+  function grantSubAdmin(address _subAdmin) external onlyRole(SUB_ADMIN_ROLE) {
+    _setupRole(SUB_ADMIN_ROLE, _subAdmin);
+  }
+
+  function revokeSubAdmin(address _subAdmin) external onlyRole(SUB_ADMIN_ROLE) {
+    _revokeRole(SUB_ADMIN_ROLE, _subAdmin);
   }
 
   function queryBlackListPagination(
     uint page,
     uint maxItemsPerPage
   ) public view returns (address[] memory blacklisted) {
-    blacklisted = new address[](maxItemsPerPage);
+    uint totalBlacklisted = blacklist.length();
+
+    if (totalBlacklisted == 0) {
+      blacklisted = new address[](0);
+      return blacklisted;
+    }
 
     uint startIndex = page * maxItemsPerPage;
     uint lastItem = page * maxItemsPerPage + maxItemsPerPage;
 
-    if (blacklist.length() - 1 < lastItem) {
-      lastItem = blacklist.length() - 1;
+    if (totalBlacklisted - 1 < lastItem) {
+      lastItem = totalBlacklisted;
     }
 
-    for (uint i = startIndex; i <= lastItem; ) {
+    blacklisted = new address[](
+      lastItem >= startIndex ? lastItem - startIndex : 0
+    );
+
+    for (uint i = startIndex; i < lastItem; ) {
       address blacklistedUser = blacklist.at(i);
 
       if (blacklistedUser == address(0)) {
         break;
       }
 
-      blacklisted[i] = blacklistedUser;
+      blacklisted[i - startIndex] = blacklistedUser;
 
       unchecked {
         i++;
